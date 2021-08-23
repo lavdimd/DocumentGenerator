@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31129.286
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SapDocumentGeneratorApi", "SapDocumentGeneratorApi\SapDocumentGeneratorApi.csproj", "{B5D4D2FE-A427-49D6-975B-6A0BBA1A07E6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B5D4D2FE-A427-49D6-975B-6A0BBA1A07E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5D4D2FE-A427-49D6-975B-6A0BBA1A07E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5D4D2FE-A427-49D6-975B-6A0BBA1A07E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5D4D2FE-A427-49D6-975B-6A0BBA1A07E6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B1E9D7B7-0D40-473F-A45A-072A1B03FD8A}
+	EndGlobalSection
+EndGlobal
