@@ -61,20 +61,20 @@ namespace SapDocumentGeneratorApi
                 endpoints.MapControllers();
             });
 
-//#if !DEBUG
-//            app.UseHangfireDashboard(string.Empty, new DashboardOptions
-//            {
-//                Authorization = new[] { new AuthFilter() },
-//                IgnoreAntiforgeryToken = true,
-//                AppPath = ""
-//            });
-//#else
+#if !DEBUG
+            app.UseHangfireDashboard(string.Empty, new DashboardOptions
+            {
+                Authorization = new[] { new AuthFilter() },
+                IgnoreAntiforgeryToken = true,
+                AppPath = ""
+            });
+#else
             app.UseHangfireDashboard("/hangfire", new DashboardOptions
             {
                 Authorization = new[] { new AuthFilter() },
                 IgnoreAntiforgeryToken = true
             });
-//#endif
+#endif
 
             recurringJobManager.AddOrUpdate<ITransactionHistoryJob>("Prepare reports from transaction history", x => x.PrepareReportsFromTrasactionHistory(default), Cron.Daily);
         }
