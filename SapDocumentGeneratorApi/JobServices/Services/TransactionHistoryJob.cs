@@ -74,7 +74,7 @@ namespace SapDocumentGeneratorApi.JobServices.Services
                 {
                     // Get the object used to communicate with the server.
                     FtpWebRequest request = (FtpWebRequest)WebRequest
-                                            .Create(new Uri(string.Format(@"ftp://{0}/{1}/{2}", ftpServerConfig?.Host, "Ecommerce", "RevenuesForDate-" + dateSimplified.Day + "-" + dateSimplified.Month + "-" + dateSimplified.Year)));
+                                            .Create(new Uri(string.Format(@"ftp://{0}/{1}/{2}", ftpServerConfig?.Host, "Ecommerce", "RevenuesForDate-" + dateSimplified.Day + "-" + dateSimplified.Month + "-" + dateSimplified.Year +".txt")));
                     request.Method = WebRequestMethods.Ftp.UploadFile;
                     request.EnableSsl = false;
                     request.UseBinary = true;
