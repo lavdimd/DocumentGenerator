@@ -15,5 +15,6 @@ namespace SapDocumentGeneratorApi.Constants
         public const int None = 6;
         public const int Trace = 7; //Trace = 0 @ loglevel enum https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.logging.loglevel?view=dotnet-plat-ext-5.0 
         public const int GoPay = 8;
+        public const int SapApiError = 9;
     }
 }

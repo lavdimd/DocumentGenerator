@@ -10,6 +10,7 @@ namespace SapDocumentGeneratorApi.Models.TransactionHistory
     public class CustomTransactionModel
     {
         #region Customer
+        public int Id { get; set; }
         public Guid CustomerGuid { get; set; }
 
         /// <summary>

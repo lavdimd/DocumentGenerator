@@ -13,5 +13,6 @@ namespace SapDocumentGeneratorApi.HttpServices.Interfaces
     public interface IHttpTransactionHistoryService
     {
         Task<Response<IList<CustomTransactionModel>>> GetTransactionHistory(TransactionRequestModel requestModel, CancellationToken cancellationToken);
+        Task<Response<TransactionUpdateResponseModel>> UpdateTransactionHistoryStatus(TransactionUpdateRequestModel requestModel, CancellationToken cancellationToken);
     }
 }
