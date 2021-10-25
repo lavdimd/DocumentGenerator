@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
-using SapDocumentGeneratorApi.Constants;
+using SAP.Core.Common.Constants;
 using SapDocumentGeneratorApi.Endpoints;
 using SapDocumentGeneratorApi.HttpServices.Interfaces;
 using SapDocumentGeneratorApi.Models;
@@ -24,16 +24,19 @@ namespace SapDocumentGeneratorApi.HttpServices.Services
         private const string APIKEYNAME = "X-API-Key";
         private readonly IHttpLogService _httpLogService;
         private readonly IConfiguration _configuration;
+        private HttpClient _httpClient;
         #endregion
 
         #region Ctor
 
         public HttpTransactionHistoryService(
             IHttpLogService httpLogService,
-            IConfiguration configuration)
+            IConfiguration configuration,
+            HttpClient httpClient)
         {
             _httpLogService = httpLogService;
             _configuration = configuration;
+            _httpClient = httpClient;
         }
 
         #endregion
@@ -46,14 +49,14 @@ namespace SapDocumentGeneratorApi.HttpServices.Services
             {
                 var endpoint = $"{TransactionHistoryEndpoints.GetTransactions}";
 
-                using var client = new HttpClient();
+                //using var client = new HttpClient();
 
                 var apiKeyString = _configuration.GetValue<string>(APIKEYNAME);
-                client.DefaultRequestHeaders.Add(APIKEYNAME, apiKeyString);
+                _httpClient.DefaultRequestHeaders.Add(APIKEYNAME, apiKeyString);
                 var jsonRequest = JsonConvert.SerializeObject(requestModel);
                 var content = new StringContent(jsonRequest, Encoding.UTF8, "application/json");
 
-                var responseFromExternalService = await client.PostAsync(endpoint, content, cancellationToken);
+                var responseFromExternalService = await _httpClient.PostAsync(endpoint, content, cancellationToken);
 
                 if (responseFromExternalService == null)
                 {

@@ -10,5 +10,6 @@ namespace SapDocumentGeneratorApi.Configuration
     {
         public ConnectionStrings ConnectionStrings { get; set; } = new ConnectionStrings();
         public FtpServerConfig FtpServerConfig { get; set; } = new FtpServerConfig();
+        public HttpUrls HttpUrls { get; set; } = new HttpUrls();
     }
 }

@@ -5,8 +5,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
-using SapDocumentGeneratorApi.Configuration;
-using SapDocumentGeneratorApi.Extensions;
+using SAP.Configuration.Extensions;
+using SAP.Core.Configuration;
 using SapDocumentGeneratorApi.JobServices.Interfaces;
 
 namespace SapDocumentGeneratorApi
@@ -31,10 +31,11 @@ namespace SapDocumentGeneratorApi
             services.RegisterAppSettings(_configuration);
 
             services.AddHttpClient();
-            services.RegisterServices();
-            services.RegisterPlatformJobServices();
+            //services.RegisterServices();
+            //services.RegisterPlatformJobServices();
             services.RegisterHangfire(appSettings);
             services.AddHangfireServer();
+            //services.RegisterHttpTransactionHistoryService(appSettings);
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
