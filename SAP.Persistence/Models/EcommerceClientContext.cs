@@ -2091,6 +2091,10 @@ namespace SAP.Persistence.Models
 
                 entity.Property(e => e.CreatedOn).HasDefaultValueSql("(getdate())");
 
+                entity.Property(e => e.DateFrom).HasDefaultValueSql("('0001-01-01T00:00:00.0000000')");
+
+                entity.Property(e => e.DateTo).HasDefaultValueSql("('0001-01-01T00:00:00.0000000')");
+
                 entity.Property(e => e.Deleted)
                     .IsRequired()
                     .HasDefaultValueSql("(CONVERT([bit],(0)))");

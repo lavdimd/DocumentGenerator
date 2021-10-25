@@ -40,6 +40,13 @@ namespace SAP.Services.Services
             _documentGeneratorHelper = documentGeneratorHelper;
         }
 
+        public async Task<Response<string>> ReportAllRevenue(List<SapInterfaceModel> sapInterfaceList, CancellationToken cancellationToken)
+        {
+            var prepareCSVForActualRevenues = await _documentGeneratorHelper.PrepareCSVFile(sapInterfaceList);
+
+            return new Response<string>(prepareCSVForActualRevenues.Data);
+        }
+
         public async Task<Response<string>> ReportDeferredRevenues(TransactionRequestModel transactionRequestModel, CancellationToken cancellationToken)
         {
             var preparedData = await _documentGeneratorHelper.PrepareDeferredRevenuesWithinTimePeriod(transactionRequestModel, cancellationToken);
@@ -74,16 +81,18 @@ namespace SAP.Services.Services
             return new Response<List<SapInterfaceModel>>(new List<SapInterfaceModel>());
         }
 
-        public async Task<Response<bool>> UploadCsvToFtp(string csvFile, CancellationToken cancellationToken)
+        public async Task<Response<bool>> UploadCsvToFtp(string csvFile, TransactionRequestModel transactionRequestModel,  CancellationToken cancellationToken)
         {
             var dateNow = DateTime.Now.Date;
+            var dateFrom = transactionRequestModel.DateFrom.Date;
+            var dateTo = transactionRequestModel.DateTo.Date;
             var ftpServerConfig = GetFtpServerConfigurations();
             try
             {
                 MakeFTPDirectoryIfNotExist(ftpServerConfig);
 
                 FtpWebRequest request = (FtpWebRequest)WebRequest
-                                        .Create(new Uri(string.Format(@"ftp://{0}/{1}/{2}", ftpServerConfig?.Host, ftpServerConfig?.Directory, $"EXAMPLE_Invoice-Customer_{dateNow.Day}-{dateNow.Month}-{dateNow.Year}.txt")));
+                                        .Create(new Uri(string.Format(@"ftp://{0}/{1}/{2}", ftpServerConfig?.Host, ftpServerConfig?.Directory, $"EXAMPLE_Invoice-Customer_{dateFrom.Day}-{dateFrom.Month}-{dateFrom.Year}__{dateTo.Day}-{dateTo.Month}-{dateTo.Year}.txt")));
                 request.Method = WebRequestMethods.Ftp.MakeDirectory;
                 request.Method = WebRequestMethods.Ftp.UploadFile;
                 request.EnableSsl = false;
@@ -164,5 +173,7 @@ namespace SAP.Services.Services
             };
             return ftpServerConfig;
         }
+
+      
     }
 }

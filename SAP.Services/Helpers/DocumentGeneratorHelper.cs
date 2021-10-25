@@ -38,7 +38,7 @@ namespace SAP.Services.Helpers
                 customTransactionSummaryList.AddRange(transactionsWithinPeriod.Data);
             }
 
-            var transactionsFromDeferredToActive = await _transactionHistoryService.GetRevenuesWithinSpecificPeriod(request, cancellationToken);
+            var transactionsFromDeferredToActive = await _transactionHistoryService.GetFromDeferredRevenuesWithinSpecificPeriod(request, cancellationToken);
             if (transactionsFromDeferredToActive.Data != null && transactionsFromDeferredToActive.Data.Count != 0)
             {
                 customTransactionSummaryList.AddRange(transactionsFromDeferredToActive.Data);
@@ -156,7 +156,7 @@ namespace SAP.Services.Helpers
                     BUKRS = $"{defaultSapInterfaceModel?.Bukrs}",
                     GJAHR = $"{dateNow.Year}",
                     MONAT = $"{dateNow.Month}",
-                    BUZEI = $"{counter}",
+                    BUZEI = $"",
                     BLART = $"{defaultSapInterfaceModel?.Blart}",
                     BUDAT = $"{dateArray[0]}",
                     BLDAT = $"{dateArray[0]}",
@@ -210,13 +210,14 @@ namespace SAP.Services.Helpers
         public async Task<Response<string>> PrepareCSVFile(List<SapInterfaceModel> sapInterfaceModels)
         {
             var csv = "";
+            int counter = 1;
             foreach (var item in sapInterfaceModels)
             {
                 csv += Environment.NewLine;
                 csv += $"{item.BUKRS}, " + //BUKRS
                        $"{item.GJAHR}, " + //GJAHR
                        $"{item.MONAT}, " + //MONAT
-                       $"{item.BUZEI}, " +                       //BUZEI
+                       $"{counter}, " +                       //BUZEI
                        $"{item.BLART}, " + //BLART
                        $"{item.BUDAT}, " +       //BUDAT
                        $"{item.BLDAT}, " +       //BLAD
@@ -258,6 +259,8 @@ namespace SAP.Services.Helpers
                        $"{item.ZLSPR}, " + //ZLSPR
                        $"{item.PROJK}, " + //PROJK
                        $"{item.BARCD}"; //BARCD
+
+                counter++;
             }
 
             return new Response<string>(csv);

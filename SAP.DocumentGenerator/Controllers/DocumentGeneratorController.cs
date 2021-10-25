@@ -19,18 +19,23 @@ namespace SAP.DocumentGenerator.Controllers
     {
         private readonly IDocumentGeneratorService _documentGeneratorService;
         private readonly IDocumentGeneratorHelper _documentGeneratorHelper;
+        private readonly ISapInterfaceTransactionService _sapInterfaceTransactionService;
 
         public DocumentGeneratorController(
             IDocumentGeneratorService documentGeneratorService,
-            IDocumentGeneratorHelper documentGeneratorHelper)
+            IDocumentGeneratorHelper documentGeneratorHelper,
+            ISapInterfaceTransactionService sapInterfaceTransactionService)
         {
             _documentGeneratorService = documentGeneratorService;
             _documentGeneratorHelper = documentGeneratorHelper;
+            _sapInterfaceTransactionService = sapInterfaceTransactionService;
         }
 
         [HttpPost("GenerateCsvFile")]
         public async Task<IActionResult> GenerateCsvFile(TransactionRequestModel transactionRequestModel, CancellationToken cancellationToken)
         {
+            var relDeferredRevenueActualRevenueList = new List<SapInterfaceModel>();
+
             transactionRequestModel.DateFrom = transactionRequestModel.DateFrom.Date;
             transactionRequestModel.DateTo = transactionRequestModel.DateTo.Date.AddHours(23).AddMinutes(59).AddSeconds(59).AddMilliseconds(59);
 
@@ -39,29 +44,44 @@ namespace SAP.DocumentGenerator.Controllers
             var csvHeader = await _documentGeneratorHelper.GenerateCSVHeader(typeof(SapInterfaceModel));
             finalCsvFile += csvHeader.Data;
 
-            var deferredRevenuesCsv = await _documentGeneratorService.ReportDeferredRevenues(transactionRequestModel, cancellationToken);
-            if(deferredRevenuesCsv.Data != null)
+
+            var deferredRevenueData = await _documentGeneratorHelper.PrepareDeferredRevenuesWithinTimePeriod(transactionRequestModel, cancellationToken);
+            if (deferredRevenueData.Data != null && deferredRevenueData.Data.Count != 0)
             {
-                finalCsvFile += deferredRevenuesCsv.Data;
+                relDeferredRevenueActualRevenueList.AddRange(deferredRevenueData.Data);
             }
 
-            var actualRevenuesCsv = await _documentGeneratorService.ReportActualRevenues(transactionRequestModel, cancellationToken);
-            if(actualRevenuesCsv.Data != null)
+            var actualRevenueData = await _documentGeneratorHelper.PrepareActualRevenuesWithinTimePeriod(transactionRequestModel, cancellationToken);
+            if(actualRevenueData.Data != null && actualRevenueData.Data.Count != 0)
             {
-                finalCsvFile += actualRevenuesCsv.Data;
+                relDeferredRevenueActualRevenueList.AddRange(actualRevenueData.Data);
             }
+
+            var csvPrepared = await _documentGeneratorService.ReportAllRevenue(relDeferredRevenueActualRevenueList, cancellationToken);
+
+            finalCsvFile += csvPrepared.Data;
 
             if(finalCsvFile == csvHeader.Data)
             {
                 return Ok("No data for this interval");
             }
+            if(relDeferredRevenueActualRevenueList.Count == 0)
+            {
+                return Ok("No data for this interval");
+            }
 
-            var uploadSuccessfully = await _documentGeneratorService.UploadCsvToFtp(finalCsvFile, cancellationToken);
+            var uploadSuccessfully = await _documentGeneratorService.UploadCsvToFtp(finalCsvFile, transactionRequestModel, cancellationToken);
 
             if(!uploadSuccessfully.Data)
             {
                 return BadRequest(uploadSuccessfully.BadRequest(uploadSuccessfully.Message));
             }
+
+            foreach(var model in relDeferredRevenueActualRevenueList)
+            {
+                var itemAdded = await _sapInterfaceTransactionService.Add(model, transactionRequestModel,cancellationToken);
+            }
+
 
             return Ok(uploadSuccessfully.Data);
         }

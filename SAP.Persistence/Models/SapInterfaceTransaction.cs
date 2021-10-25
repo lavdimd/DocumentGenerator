@@ -59,5 +59,7 @@ namespace SAP.Persistence.Models
         public bool? Deleted { get; set; }
         public int? CreatedBy { get; set; }
         public int? UpdatedBy { get; set; }
+        public DateTime DateFrom { get; set; }
+        public DateTime DateTo { get; set; }
     }
 }

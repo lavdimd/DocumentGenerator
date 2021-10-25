@@ -74,7 +74,7 @@ namespace SAP.Services.Services
             return new Response<List<CustomTransactionSummaryModel>>(customResponseList);
         }
 
-        public async Task<Response<List<CustomTransactionSummaryModel>>> GetRevenuesWithinSpecificPeriod(TransactionRequestModel transactionRequestModel, CancellationToken cancellationToken)
+        public async Task<Response<List<CustomTransactionSummaryModel>>> GetFromDeferredRevenuesWithinSpecificPeriod(TransactionRequestModel transactionRequestModel, CancellationToken cancellationToken)
         {
             List<CustomTransactionSummaryModel> customResponseList = new();
 
@@ -132,9 +132,9 @@ namespace SAP.Services.Services
                 return new Response<List<CustomTransactionSummaryModel>>(null, message: $"There is no deferred revenue for this interval: {transactionRequestModel.DateFrom} - {transactionRequestModel.DateTo}", statusCode: (int)HttpStatusCode.NotFound);
             }
 
-            var paymentInformations = await _context.PaymentInfos.Where(x => deferredRevenues.Select(x => x.Id).Contains(x.PaymentTableId)).ToListAsync(cancellationToken);
+            var paymentInformation = await _context.PaymentInfos.Where(x => deferredRevenues.Select(x => x.Id).Contains(x.PaymentTableId)).ToListAsync(cancellationToken);
 
-            var dataGrouped = paymentInformations.GroupBy(x => new { x.CurrencyId, x.CountryId, x.StoreId });
+            var dataGrouped = paymentInformation.GroupBy(x => new { x.CurrencyId, x.CountryId, x.StoreId });
 
             foreach (var transaction in dataGrouped)
             {
@@ -142,9 +142,9 @@ namespace SAP.Services.Services
                 var currency = await _context.Currencies.FirstOrDefaultAsync(x => x.Id == transaction.Key.CurrencyId);
                 var country = await _context.Countries.FirstOrDefaultAsync(x => x.Id == transaction.Key.CountryId);
 
-                var paymentTableIds = paymentInformations.Where(x => x.CurrencyId == transaction.Key.CurrencyId
-                                                            && x.StoreId == transaction.Key.StoreId
-                                                            && x.CountryId == transaction.Key.CountryId).Select(x => x.PaymentTableId).ToList();
+                var paymentTableIds = paymentInformation.Where(x => x.CurrencyId == transaction.Key.CurrencyId
+                                                                    && x.StoreId == transaction.Key.StoreId
+                                                                    && x.CountryId == transaction.Key.CountryId).Select(x => x.PaymentTableId).ToList();
 
                 var transactionModel = new CustomTransactionSummaryModel
                 {

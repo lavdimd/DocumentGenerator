@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using SAP.Configuration.Extensions;
 using SAP.Core.Configuration;
+using SAP.Models.Mapping;
 using SAP.Services.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -40,6 +41,7 @@ namespace SAP.DocumentGenerator
             services.RegisterPlatformJobServices();
 
             services.RegisterHangfire(appSettings);
+            services.AddAutoMapper(typeof(MappingProfiles));
             services.AddHangfireServer();
 
             services.AddControllers();

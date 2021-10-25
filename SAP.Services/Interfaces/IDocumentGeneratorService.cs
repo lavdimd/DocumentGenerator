@@ -11,9 +11,10 @@ namespace SAP.Services.Interfaces
 {
     public interface IDocumentGeneratorService
     {
+        Task<Response<string>> ReportAllRevenue(List<SapInterfaceModel> sapInterfaceList, CancellationToken cancellationToken);
         Task<Response<string>> ReportDeferredRevenues(TransactionRequestModel transactionRequestModel, CancellationToken cancellationToken);
         Task<Response<string>> ReportActualRevenues(TransactionRequestModel transactionRequestModel, CancellationToken cancellationToken);
         Task<Response<List<SapInterfaceModel>>> PrepareTransactionHistoryForSpecificTimePeriods(TransactionRequestModel request, CancellationToken cancellationToken);
-        Task<Response<bool>> UploadCsvToFtp(string csvFile, CancellationToken cancellationToken);
+        Task<Response<bool>> UploadCsvToFtp(string csvFile, TransactionRequestModel transactionRequestModel, CancellationToken cancellationToken);
     }
 }
