@@ -19,6 +19,9 @@ namespace SAP.Configuration.Extensions
             services.AddScoped<ITransactionHistoryService, TransactionHistoryService>();
             services.AddScoped<IDocumentGeneratorHelper, DocumentGeneratorHelper>();
             services.AddScoped<ISapInterfaceTransactionService, SapInterfaceTransactionService>();
+            services.AddScoped<ILogService, LogService>();
+            services.AddScoped<IStoreService, StoreService>();
+            services.AddScoped<IStaticSettingService, StaticSettingService>();
         }
 
         public static void RegisterPlatformJobServices(this IServiceCollection services)

@@ -35,6 +35,7 @@ namespace SAP.Persistence.Models
         public int? UpdatedBy { get; set; }
         public int? SecondaryId { get; set; }
         public string ImageUrl { get; set; }
+        public string MetaDescription { get; set; }
 
         public virtual Category ParentCategory { get; set; }
         public virtual ICollection<BoostingPlan> BoostingPlans { get; set; }

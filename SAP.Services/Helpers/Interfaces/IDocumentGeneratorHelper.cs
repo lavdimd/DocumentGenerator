@@ -13,11 +13,10 @@ namespace SAP.Services.Helpers.Interfaces
     {
         Task<Response<List<SapInterfaceModel>>> PrepareDeferredRevenuesWithinTimePeriod(TransactionRequestModel request, CancellationToken cancellationToken);
         Task<Response<List<SapInterfaceModel>>> PrepareActualRevenuesWithinTimePeriod(TransactionRequestModel request, CancellationToken cancellationToken);
+        Task<Response<List<SapInterfaceModel>>> PrepareAllRevenuesWithinTimePeriod(TransactionRequestModel request, CancellationToken cancellationToken);
+        Task<Response<List<SapInterfaceModel>>> PrepareRevenuesToCollectFromDeferredRevenuesWithinTimePeriod(TransactionRequestModel request, CancellationToken cancellationToken);
         Task<Response<string>> PrepareCSVFile(List<SapInterfaceModel> sapInterfaceModels);
         Task<Response<string>> GenerateCSVHeader(Type type);
-
-
-
-
+        public string GenerateReferenceNumber();
     }
 }

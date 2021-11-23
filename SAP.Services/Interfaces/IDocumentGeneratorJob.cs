@@ -10,5 +10,6 @@ namespace SAP.Services.Interfaces
     public interface IDocumentGeneratorJob
     {
         Task GenerateCSV(CancellationToken cancellationToken);
+      
     }
 }

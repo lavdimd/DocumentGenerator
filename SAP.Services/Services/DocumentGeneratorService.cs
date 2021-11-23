@@ -20,25 +20,34 @@ namespace SAP.Services.Services
 {
     public class DocumentGeneratorService : IDocumentGeneratorService
     {
-        readonly EcommerceClientContext _context = new();
+        #region Properties
 
         private readonly ITransactionHistoryService _transactionHistoryService;
         private readonly IConfiguration _configuration;
         readonly AppSettings _appSettings;
         private readonly IDocumentGeneratorHelper _documentGeneratorHelper;
 
+        #endregion
+
+
+        #region Ctor
 
         public DocumentGeneratorService(
-            ITransactionHistoryService transactionHistoryService,
-            IConfiguration configuration,
-            AppSettings appSettings,
-            IDocumentGeneratorHelper documentGeneratorHelper)
+          ITransactionHistoryService transactionHistoryService,
+          IConfiguration configuration,
+          AppSettings appSettings,
+          IDocumentGeneratorHelper documentGeneratorHelper)
         {
             _transactionHistoryService = transactionHistoryService;
             _configuration = configuration;
             _appSettings = appSettings;
             _documentGeneratorHelper = documentGeneratorHelper;
         }
+
+        #endregion
+
+
+        #region Methods
 
         public async Task<Response<string>> ReportAllRevenue(List<SapInterfaceModel> sapInterfaceList, CancellationToken cancellationToken)
         {
@@ -81,7 +90,7 @@ namespace SAP.Services.Services
             return new Response<List<SapInterfaceModel>>(new List<SapInterfaceModel>());
         }
 
-        public async Task<Response<bool>> UploadCsvToFtp(string csvFile, TransactionRequestModel transactionRequestModel,  CancellationToken cancellationToken)
+        public async Task<Response<bool>> UploadCsvToFtp(string csvFile, TransactionRequestModel transactionRequestModel, CancellationToken cancellationToken)
         {
             var dateNow = DateTime.Now.Date;
             var dateFrom = transactionRequestModel.DateFrom.Date;
@@ -155,25 +164,26 @@ namespace SAP.Services.Services
         private FtpServerConfig GetFtpServerConfigurations()
         {
             var app = _appSettings.FtpServerConfig;
-            //FtpServerConfig ftpServerConfig = new FtpServerConfig
-            //{
-            //    Host = "am.gjirafamall.com",
-            //    Username = "am.gjirafamall.com|am",
-            //    Password = "6UWcEufu",
-            //    Port = 21
-            //};
-
             FtpServerConfig ftpServerConfig = new FtpServerConfig
             {
                 Directory = "sapftp/CZ01/FLEA_MARKET/TEST",
-                Host = "﻿ftp.cncenter.cz",
-                Username = "fleamarket",
-                Password = "Fl@mkt@5196",
+                Host = "am.gjirafamall.com",
+                Username = "am.gjirafamall.com|am",
+                Password = "6UWcEufu",
                 Port = 21
             };
+
+            //FtpServerConfig ftpServerConfig = new FtpServerConfig
+            //{
+            //    Directory = "sapftp/CZ01/FLEA_MARKET/TEST",
+            //    Host = "﻿ftp.cncenter.cz",
+            //    Username = "fleamarket",
+            //    Password = "Fl@mkt@5196",
+            //    Port = 21
+            //};
             return ftpServerConfig;
         }
 
-      
+        #endregion
     }
 }

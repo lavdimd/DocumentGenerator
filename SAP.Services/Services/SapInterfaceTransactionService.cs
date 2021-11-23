@@ -4,6 +4,7 @@ using SAP.Models.Response;
 using SAP.Persistence.Models;
 using SAP.Services.Interfaces;
 using System;
+using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -11,13 +12,24 @@ namespace SAP.Services.Services
 {
     public class SapInterfaceTransactionService : ISapInterfaceTransactionService
     {
+        #region Properties
+
+        private EcommerceClientContext _context = new();
         private readonly IMapper _mapper;
 
+        #endregion
+
+        #region Ctor
         public SapInterfaceTransactionService(IMapper mapper)
         {
             _mapper = mapper;
         }
-        private EcommerceClientContext _context = new();
+
+        #endregion
+
+
+        #region Methods
+
         public async Task<Response<SapInterfaceTransaction>> Add(SapInterfaceModel model, TransactionRequestModel requestModel, CancellationToken canellactionToken)
         {
             var mapData = _mapper.Map<SapInterfaceTransaction>(model);
@@ -25,12 +37,15 @@ namespace SAP.Services.Services
             mapData.DateTo = requestModel.DateTo;
             var addedData = await _context.SapInterfaceTransactions.AddAsync(mapData, canellactionToken);
 
-            if(await _context.SaveChangesAsync() <= 0)
+            if (await _context.SaveChangesAsync() <= 0)
             {
-                return new Response<SapInterfaceTransaction>(null, message: "Error in database!", statusCode: 400);
+                return new Response<SapInterfaceTransaction>(null, message: "Error in database!", statusCode: (int)HttpStatusCode.BadRequest);
             }
 
             return new Response<SapInterfaceTransaction>(mapData);
         }
+
+        #endregion
+
     }
 }

@@ -47,7 +47,6 @@ namespace SAP.Persistence.Models
         public virtual DbSet<CustomerRole> CustomerRoles { get; set; }
         public virtual DbSet<CustomerSearch> CustomerSearches { get; set; }
         public virtual DbSet<DataAnnotationType> DataAnnotationTypes { get; set; }
-        public virtual DbSet<DefaultSapObjectInterface> DefaultSapObjectInterfaces { get; set; }
         public virtual DbSet<DeferredRevenue> DeferredRevenues { get; set; }
         public virtual DbSet<EmailAccount> EmailAccounts { get; set; }
         public virtual DbSet<Entity> Entities { get; set; }
@@ -402,6 +401,8 @@ namespace SAP.Persistence.Models
                 entity.Property(e => e.ImageUrl)
                     .HasMaxLength(2048)
                     .HasDefaultValueSql("(N'')");
+
+                entity.Property(e => e.MetaDescription).HasMaxLength(500);
 
                 entity.Property(e => e.MetaKeywords).HasMaxLength(150);
 
@@ -916,197 +917,6 @@ namespace SAP.Persistence.Models
                     .HasDefaultValueSql("(CONVERT([bit],(0)))");
 
                 entity.Property(e => e.Name).HasMaxLength(150);
-            });
-
-            modelBuilder.Entity<DefaultSapObjectInterface>(entity =>
-            {
-                entity.ToTable("DefaultSapObjectInterface");
-
-                entity.Property(e => e.Altkt)
-                    .HasMaxLength(50)
-                    .HasColumnName("ALTKT");
-
-                entity.Property(e => e.Aufnr)
-                    .HasMaxLength(20)
-                    .HasColumnName("AUFNR");
-
-                entity.Property(e => e.Barcd)
-                    .HasMaxLength(20)
-                    .HasColumnName("BARCD");
-
-                entity.Property(e => e.Bewar)
-                    .HasMaxLength(20)
-                    .HasColumnName("BEWAR");
-
-                entity.Property(e => e.Bktxt)
-                    .HasMaxLength(100)
-                    .HasColumnName("BKTXT");
-
-                entity.Property(e => e.Blart)
-                    .HasMaxLength(10)
-                    .HasColumnName("BLART");
-
-                entity.Property(e => e.Bldat)
-                    .HasMaxLength(20)
-                    .HasColumnName("BLDAT");
-
-                entity.Property(e => e.Bschl)
-                    .HasMaxLength(20)
-                    .HasColumnName("BSCHL");
-
-                entity.Property(e => e.Budat)
-                    .HasMaxLength(20)
-                    .HasColumnName("BUDAT");
-
-                entity.Property(e => e.Bukrs)
-                    .HasMaxLength(150)
-                    .HasColumnName("BUKRS");
-
-                entity.Property(e => e.Buzei)
-                    .HasMaxLength(15)
-                    .HasColumnName("BUZEI");
-
-                entity.Property(e => e.Bvtyp)
-                    .HasMaxLength(20)
-                    .HasColumnName("BVTYP");
-
-                entity.Property(e => e.CreatedOn).HasDefaultValueSql("(getdate())");
-
-                entity.Property(e => e.Deleted)
-                    .IsRequired()
-                    .HasDefaultValueSql("(CONVERT([bit],(0)))");
-
-                entity.Property(e => e.Dmbtr)
-                    .HasMaxLength(20)
-                    .HasColumnName("DMBTR");
-
-                entity.Property(e => e.DmbtrBrutto)
-                    .HasMaxLength(20)
-                    .HasColumnName("DMBTR_BRUTTO");
-
-                entity.Property(e => e.Fkber)
-                    .HasMaxLength(20)
-                    .HasColumnName("FKBER");
-
-                entity.Property(e => e.Gjahr)
-                    .HasMaxLength(15)
-                    .HasColumnName("GJAHR");
-
-                entity.Property(e => e.Gsber)
-                    .HasMaxLength(20)
-                    .HasColumnName("GSBER");
-
-                entity.Property(e => e.Hkont)
-                    .HasMaxLength(50)
-                    .HasColumnName("HKONT");
-
-                entity.Property(e => e.Kostl)
-                    .HasMaxLength(20)
-                    .HasColumnName("KOSTL");
-
-                entity.Property(e => e.Meins)
-                    .HasMaxLength(20)
-                    .HasColumnName("MEINS");
-
-                entity.Property(e => e.Menge)
-                    .HasMaxLength(20)
-                    .HasColumnName("MENGE");
-
-                entity.Property(e => e.Monat)
-                    .HasMaxLength(10)
-                    .HasColumnName("MONAT");
-
-                entity.Property(e => e.Mwskz)
-                    .HasMaxLength(20)
-                    .HasColumnName("MWSKZ");
-
-                entity.Property(e => e.Mwsts)
-                    .HasMaxLength(20)
-                    .HasColumnName("MWSTS");
-
-                entity.Property(e => e.Pernr)
-                    .HasMaxLength(20)
-                    .HasColumnName("PERNR");
-
-                entity.Property(e => e.Prctr)
-                    .HasMaxLength(20)
-                    .HasColumnName("PRCTR");
-
-                entity.Property(e => e.Projk)
-                    .HasMaxLength(20)
-                    .HasColumnName("PROJK");
-
-                entity.Property(e => e.Sgtxt)
-                    .HasMaxLength(150)
-                    .HasColumnName("SGTXT");
-
-                entity.Property(e => e.Shkzg)
-                    .HasMaxLength(20)
-                    .HasColumnName("SHKZG");
-
-                entity.Property(e => e.Umskz)
-                    .HasMaxLength(50)
-                    .HasColumnName("UMSKZ");
-
-                entity.Property(e => e.Vbund)
-                    .HasMaxLength(20)
-                    .HasColumnName("VBUND");
-
-                entity.Property(e => e.Waers)
-                    .HasMaxLength(20)
-                    .HasColumnName("WAERS");
-
-                entity.Property(e => e.Wmwst)
-                    .HasMaxLength(20)
-                    .HasColumnName("WMWST");
-
-                entity.Property(e => e.Wrbtr)
-                    .HasMaxLength(20)
-                    .HasColumnName("WRBTR");
-
-                entity.Property(e => e.WrbtrBrutto)
-                    .HasMaxLength(20)
-                    .HasColumnName("WRBTR_BRUTTO");
-
-                entity.Property(e => e.Xblnr)
-                    .HasMaxLength(20)
-                    .HasColumnName("XBLNR");
-
-                entity.Property(e => e.Xnegp)
-                    .HasMaxLength(50)
-                    .HasColumnName("XNEGP");
-
-                entity.Property(e => e.Xref1)
-                    .HasMaxLength(20)
-                    .HasColumnName("XREF1");
-
-                entity.Property(e => e.Xref2)
-                    .HasMaxLength(20)
-                    .HasColumnName("XREF2");
-
-                entity.Property(e => e.Xref3)
-                    .HasMaxLength(20)
-                    .HasColumnName("XREF3");
-
-                entity.Property(e => e.Zfbdt)
-                    .HasMaxLength(20)
-                    .HasColumnName("ZFBDT");
-
-                entity.Property(e => e.Zlsch)
-                    .HasMaxLength(20)
-                    .HasColumnName("ZLSCH");
-
-                entity.Property(e => e.Zlspr)
-                    .HasMaxLength(20)
-                    .HasColumnName("ZLSPR");
-
-                entity.Property(e => e.Zterm)
-                    .HasMaxLength(20)
-                    .HasColumnName("ZTERM");
-
-                entity.Property(e => e.Zuonr)
-                    .HasMaxLength(20)
-                    .HasColumnName("ZUONR");
             });
 
             modelBuilder.Entity<DeferredRevenue>(entity =>
@@ -2421,7 +2231,7 @@ namespace SAP.Persistence.Models
                     .IsUnique()
                     .HasFilter("([SecondaryId] IS NOT NULL)");
 
-                entity.Property(e => e.ControlTypeId).HasComment("DropdownList = 1, CheckBox = 2, RadioButton = 3, TextBox = 4");
+                entity.Property(e => e.ControlTypeId).HasComment("DropdownList = 1, CheckBox = 2, RadioButton = 3, TextBox = 4, Number = 5");
 
                 entity.Property(e => e.CreatedOn).HasDefaultValueSql("(getdate())");
 

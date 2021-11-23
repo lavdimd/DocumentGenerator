@@ -1,0 +1,15 @@
+﻿using SAP.Persistence.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace SAP.Services.Interfaces
+{
+    public interface ILogService
+    {
+        Task<Log> AddLogAsync(int logLevel, string shortMessage, string fullMessage = "", CancellationToken cancellationToken = default);
+    }
+}
