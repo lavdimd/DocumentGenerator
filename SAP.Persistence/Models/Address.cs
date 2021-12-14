@@ -10,7 +10,6 @@ namespace SAP.Persistence.Models
         public Address()
         {
             ClassifiedAds = new HashSet<ClassifiedAd>();
-            CustomerAddressMappings = new HashSet<CustomerAddressMapping>();
         }
 
         public int Id { get; set; }
@@ -40,7 +39,7 @@ namespace SAP.Persistence.Models
         public virtual City City { get; set; }
         public virtual Country Country { get; set; }
         public virtual StateProvince StateProvince { get; set; }
+        public virtual CustomerAddressMapping CustomerAddressMapping { get; set; }
         public virtual ICollection<ClassifiedAd> ClassifiedAds { get; set; }
-        public virtual ICollection<CustomerAddressMapping> CustomerAddressMappings { get; set; }
     }
 }

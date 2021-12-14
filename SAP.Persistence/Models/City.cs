@@ -11,6 +11,7 @@ namespace SAP.Persistence.Models
         {
             Addresses = new HashSet<Address>();
             CustomerSearches = new HashSet<CustomerSearch>();
+            StoreInformations = new HashSet<StoreInformation>();
         }
 
         public int Id { get; set; }
@@ -25,9 +26,11 @@ namespace SAP.Persistence.Models
         public int? CreatedBy { get; set; }
         public int? UpdatedBy { get; set; }
         public string ZipCode { get; set; }
+        public string NormalizedName { get; set; }
 
         public virtual Country Country { get; set; }
         public virtual ICollection<Address> Addresses { get; set; }
         public virtual ICollection<CustomerSearch> CustomerSearches { get; set; }
+        public virtual ICollection<StoreInformation> StoreInformations { get; set; }
     }
 }

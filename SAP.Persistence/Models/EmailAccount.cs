@@ -27,6 +27,7 @@ namespace SAP.Persistence.Models
         public bool? Deleted { get; set; }
         public int? CreatedBy { get; set; }
         public int? UpdatedBy { get; set; }
+        public int ServiceProvider { get; set; }
 
         public virtual ICollection<MessageTemplate> MessageTemplates { get; set; }
     }

@@ -14,6 +14,7 @@ namespace SAP.Persistence.Models
             DeferredRevenues = new HashSet<DeferredRevenue>();
             PaymentInfos = new HashSet<PaymentInfo>();
             StateProvinces = new HashSet<StateProvince>();
+            StoreInformations = new HashSet<StoreInformation>();
         }
 
         public int Id { get; set; }
@@ -40,5 +41,6 @@ namespace SAP.Persistence.Models
         public virtual ICollection<DeferredRevenue> DeferredRevenues { get; set; }
         public virtual ICollection<PaymentInfo> PaymentInfos { get; set; }
         public virtual ICollection<StateProvince> StateProvinces { get; set; }
+        public virtual ICollection<StoreInformation> StoreInformations { get; set; }
     }
 }

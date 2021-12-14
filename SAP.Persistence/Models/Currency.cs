@@ -31,6 +31,7 @@ namespace SAP.Persistence.Models
         public bool? Deleted { get; set; }
         public int? CreatedBy { get; set; }
         public int? UpdatedBy { get; set; }
+        public string Symbol { get; set; }
 
         public virtual ICollection<BoostingPlanClassifiedAdMapping> BoostingPlanClassifiedAdMappings { get; set; }
         public virtual ICollection<BoostingPlan> BoostingPlans { get; set; }

@@ -7,11 +7,6 @@ namespace SAP.Persistence.Models
 {
     public partial class StaticLocaleStringResource
     {
-        public StaticLocaleStringResource()
-        {
-            LocalizationKeyStaticLocaleStringResourceMappings = new HashSet<LocalizationKeyStaticLocaleStringResourceMapping>();
-        }
-
         public int Id { get; set; }
         public int LanguageId { get; set; }
         public string ResourceName { get; set; }
@@ -23,6 +18,5 @@ namespace SAP.Persistence.Models
         public int? UpdatedBy { get; set; }
 
         public virtual Language Language { get; set; }
-        public virtual ICollection<LocalizationKeyStaticLocaleStringResourceMapping> LocalizationKeyStaticLocaleStringResourceMappings { get; set; }
     }
 }

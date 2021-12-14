@@ -16,7 +16,6 @@ namespace SAP.Persistence.Models
             Conversations = new HashSet<Conversation>();
             CustomerFavorites = new HashSet<CustomerFavorite>();
             DeferredRevenues = new HashSet<DeferredRevenue>();
-            EsoperationClassifiedAds = new HashSet<EsoperationClassifiedAd>();
             PaymentInfos = new HashSet<PaymentInfo>();
         }
 
@@ -45,9 +44,11 @@ namespace SAP.Persistence.Models
         public int? CreatedBy { get; set; }
         public int? UpdatedBy { get; set; }
         public int StoreId { get; set; }
+        public int? SecondaryId { get; set; }
 
         public virtual Address Address { get; set; }
         public virtual Customer Customer { get; set; }
+        public virtual EsoperationClassifiedAd EsoperationClassifiedAd { get; set; }
         public virtual ICollection<BoostingPlanClassifiedAdMapping> BoostingPlanClassifiedAdMappings { get; set; }
         public virtual ICollection<ClassifiedAdCategoryMapping> ClassifiedAdCategoryMappings { get; set; }
         public virtual ICollection<ClassifiedAdPictureMapping> ClassifiedAdPictureMappings { get; set; }
@@ -55,7 +56,6 @@ namespace SAP.Persistence.Models
         public virtual ICollection<Conversation> Conversations { get; set; }
         public virtual ICollection<CustomerFavorite> CustomerFavorites { get; set; }
         public virtual ICollection<DeferredRevenue> DeferredRevenues { get; set; }
-        public virtual ICollection<EsoperationClassifiedAd> EsoperationClassifiedAds { get; set; }
         public virtual ICollection<PaymentInfo> PaymentInfos { get; set; }
     }
 }

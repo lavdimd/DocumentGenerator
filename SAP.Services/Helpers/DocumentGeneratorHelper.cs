@@ -98,10 +98,10 @@ namespace SAP.Services.Helpers
                     DMBTR_BRUTTO = $"{customSummaryTransaction.TotalAmount:0.00}".Replace('.', ','),
                     WRBTR_BRUTTO = $"{customSummaryTransaction.TotalAmount:0.00}".Replace('.', ','),
                     MWSKZ = $"",
-                    MWSTS = $"{customSummaryTransaction.TaxAmountInLocalCurrency:0.00}".Replace('.', ','),
-                    WMWST = $"{customSummaryTransaction.TaxAmountInLocalCurrency:0.00}".Replace('.', ','),
+                    MWSTS = $"",
+                    WMWST = $"",
                     KOSTL = $"",
-                    AUFNR = $"{customSummaryTransaction.StoreOrderNumber}",
+                    AUFNR = $"",
                     MENGE = $"",
                     MEINS = $"",
                     PERNR = $"",
@@ -337,19 +337,21 @@ namespace SAP.Services.Helpers
 
             foreach (var transaction in transactionsGrouped)
             {
-                var totalAmount = transaction.Sum(x => x.TotalAmount);
+                var totalAmount = (double)transaction.Sum(x => x.TotalAmount);
                 var vatRateForCountry = transaction.FirstOrDefault().VATrate;
-                var taxAmountInLocalCurrency = (totalAmount * vatRateForCountry) / 100;
+                var calculatedVATRate = (decimal)(vatRateForCountry / 10.0);
+                var netPrice = Math.Round((totalAmount/1.21),2);
+                var taxAmount = Math.Round((totalAmount - netPrice),2);
 
                 var customTransactionModel = new CustomTransactionSummaryModel
                 {
-                    TotalAmount = totalAmount - taxAmountInLocalCurrency,
+                    TotalAmount = (decimal)netPrice,
                     NoOfRecords = transaction.Count(),
                     Currency = transaction.Key.Currency,
                     VATrate = transaction.FirstOrDefault().VATrate,
                     StoreOrderNumber = transaction.Key.StoreOrderNumber,
                     ExternalCodeForSAP = transaction.Key.ExternalCodeForSAP,
-                    TaxAmountInLocalCurrency = taxAmountInLocalCurrency,
+                    TaxAmountInLocalCurrency = (decimal)taxAmount,
                     SapInterfaceType = SapInterfaceObjects.CustomerInvoice
                 };
 

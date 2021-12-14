@@ -20,6 +20,7 @@ namespace SAP.Persistence.Models
         public virtual DbSet<ActionNotification> ActionNotifications { get; set; }
         public virtual DbSet<Address> Addresses { get; set; }
         public virtual DbSet<AggregatedCounter> AggregatedCounters { get; set; }
+        public virtual DbSet<BankAccount> BankAccounts { get; set; }
         public virtual DbSet<Banner> Banners { get; set; }
         public virtual DbSet<BlockCustomer> BlockCustomers { get; set; }
         public virtual DbSet<BoostPosition> BoostPositions { get; set; }
@@ -66,7 +67,6 @@ namespace SAP.Persistence.Models
         public virtual DbSet<List> Lists { get; set; }
         public virtual DbSet<LocaleStringResourceControl> LocaleStringResourceControls { get; set; }
         public virtual DbSet<LocaleStringResourceSetting> LocaleStringResourceSettings { get; set; }
-        public virtual DbSet<LocalizationKeyStaticLocaleStringResourceMapping> LocalizationKeyStaticLocaleStringResourceMappings { get; set; }
         public virtual DbSet<LocalizedProperty> LocalizedProperties { get; set; }
         public virtual DbSet<Log> Logs { get; set; }
         public virtual DbSet<LogLevel> LogLevels { get; set; }
@@ -76,6 +76,7 @@ namespace SAP.Persistence.Models
         public virtual DbSet<Notification> Notifications { get; set; }
         public virtual DbSet<Operator> Operators { get; set; }
         public virtual DbSet<Payment> Payments { get; set; }
+        public virtual DbSet<PaymentCard> PaymentCards { get; set; }
         public virtual DbSet<PaymentInfo> PaymentInfos { get; set; }
         public virtual DbSet<PermissionRecord> PermissionRecords { get; set; }
         public virtual DbSet<PermissionRecordCustomerRoleMapping> PermissionRecordCustomerRoleMappings { get; set; }
@@ -122,7 +123,7 @@ namespace SAP.Persistence.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.HasAnnotation("Relational:Collation", "SQL_Latin1_General_CP1_CI_AS");
+            modelBuilder.HasAnnotation("Relational:Collation", "Latin1_General_CI_AS");
 
             modelBuilder.Entity<ActionNotification>(entity =>
             {
@@ -138,6 +139,12 @@ namespace SAP.Persistence.Models
             modelBuilder.Entity<Address>(entity =>
             {
                 entity.ToTable("Address");
+
+                entity.HasIndex(e => e.CityId, "IX_Address_CityId");
+
+                entity.HasIndex(e => e.CountryId, "IX_Address_CountryId");
+
+                entity.HasIndex(e => e.StateProvinceId, "IX_Address_StateProvinceId");
 
                 entity.Property(e => e.Address1).HasMaxLength(100);
 
@@ -201,6 +208,33 @@ namespace SAP.Persistence.Models
                 entity.Property(e => e.ExpireAt).HasColumnType("datetime");
             });
 
+            modelBuilder.Entity<BankAccount>(entity =>
+            {
+                entity.ToTable("BankAccount");
+
+                entity.Property(e => e.AccountName).HasMaxLength(150);
+
+                entity.Property(e => e.AccountNumber).HasMaxLength(50);
+
+                entity.Property(e => e.BankCode).HasMaxLength(50);
+
+                entity.Property(e => e.Bic)
+                    .HasMaxLength(15)
+                    .HasColumnName("BIC");
+
+                entity.Property(e => e.CreatedOn).HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.Deleted)
+                    .IsRequired()
+                    .HasDefaultValueSql("(CONVERT([bit],(0)))");
+
+                entity.Property(e => e.Iban)
+                    .HasMaxLength(100)
+                    .HasColumnName("IBAN");
+
+                entity.Property(e => e.Prefix).HasMaxLength(150);
+            });
+
             modelBuilder.Entity<Banner>(entity =>
             {
                 entity.ToTable("Banner");
@@ -225,6 +259,8 @@ namespace SAP.Persistence.Models
                 entity.HasIndex(e => e.Deleted, "IX_BlockCustomer_Deleted");
 
                 entity.HasIndex(e => new { e.FromCustomerId, e.ToCustomerId, e.Deleted }, "IX_BlockCustomer_FromCustomerId_ToCustomerId_Deleted");
+
+                entity.HasIndex(e => e.ToCustomerId, "IX_BlockCustomer_ToCustomerId");
 
                 entity.Property(e => e.CreatedOn).HasDefaultValueSql("(getdate())");
 
@@ -279,6 +315,8 @@ namespace SAP.Persistence.Models
 
                 entity.HasIndex(e => new { e.CategoryId, e.Status, e.Published, e.Name, e.Deleted }, "IX_BoostingPlan_CategoryId_Status_Published_Name_Deleted");
 
+                entity.HasIndex(e => e.CurrencyId, "IX_BoostingPlan_CurrencyId");
+
                 entity.HasIndex(e => new { e.Deleted, e.Published }, "IX_BoostingPlan_Deleted_Published");
 
                 entity.HasIndex(e => new { e.Published, e.Deleted }, "IX_BoostingPlan_Published_Deleted");
@@ -325,6 +363,10 @@ namespace SAP.Persistence.Models
                 entity.HasIndex(e => e.BoostingPlanId, "IX_BoostingPlan_ClassifiedAd_Mapping_BoostingPlanId");
 
                 entity.HasIndex(e => new { e.ClassifiedAdId, e.Active, e.Deleted }, "IX_BoostingPlan_ClassifiedAd_Mapping_ClassifiedAdId_Active_Deleted");
+
+                entity.HasIndex(e => e.CurrencyId, "IX_BoostingPlan_ClassifiedAd_Mapping_CurrencyId");
+
+                entity.HasIndex(e => e.CustomerId, "IX_BoostingPlan_ClassifiedAd_Mapping_CustomerId");
 
                 entity.HasIndex(e => new { e.DateTo, e.Deleted }, "IX_BoostingPlan_ClassifiedAd_Mapping_DateTo_Deleted");
 
@@ -419,6 +461,10 @@ namespace SAP.Persistence.Models
 
                 entity.ToTable("Category_SpecificationAttribute_Mapping");
 
+                entity.HasIndex(e => e.CategoryId, "IX_Category_SpecificationAttribute_Mapping_CategoryId");
+
+                entity.HasIndex(e => e.SpecificationAttributeId, "IX_Category_SpecificationAttribute_Mapping_SpecificationAttributeId");
+
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.CreatedOn).HasDefaultValueSql("(getdate())");
@@ -458,6 +504,11 @@ namespace SAP.Persistence.Models
                     .IsRequired()
                     .HasMaxLength(100);
 
+                entity.Property(e => e.NormalizedName)
+                    .IsRequired()
+                    .HasMaxLength(100)
+                    .HasDefaultValueSql("(N'')");
+
                 entity.Property(e => e.ZipCode)
                     .HasMaxLength(100)
                     .HasDefaultValueSql("(N'')");
@@ -470,6 +521,14 @@ namespace SAP.Persistence.Models
             modelBuilder.Entity<ClassifiedAd>(entity =>
             {
                 entity.ToTable("ClassifiedAd");
+
+                entity.HasIndex(e => e.AddressId, "IX_ClassifiedAd_AddressId");
+
+                entity.HasIndex(e => e.CustomerId, "IX_ClassifiedAd_CustomerId");
+
+                entity.HasIndex(e => e.SecondaryId, "IX_ClassifiedAd_SecondaryId")
+                    .IsUnique()
+                    .HasFilter("([SecondaryId] IS NOT NULL)");
 
                 entity.Property(e => e.CreatedOn).HasDefaultValueSql("(getdate())");
 
@@ -508,6 +567,8 @@ namespace SAP.Persistence.Models
 
                 entity.ToTable("ClassifiedAd_Category_Mapping");
 
+                entity.HasIndex(e => e.ClassifiedAdId, "IX_ClassifiedAd_Category_Mapping_ClassifiedAdId");
+
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.CreatedOn).HasDefaultValueSql("(getdate())");
@@ -531,6 +592,8 @@ namespace SAP.Persistence.Models
 
                 entity.ToTable("ClassifiedAd_Picture_Mapping");
 
+                entity.HasIndex(e => e.PictureId, "IX_ClassifiedAd_Picture_Mapping_PictureId");
+
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.CreatedOn).HasDefaultValueSql("(getdate())");
@@ -553,6 +616,8 @@ namespace SAP.Persistence.Models
                 entity.HasKey(e => new { e.ClassifiedAdId, e.SpecificationAttributeOptionId, e.Id });
 
                 entity.ToTable("ClassifiedAd_SpecificationAttributeOption_Mapping");
+
+                entity.HasIndex(e => e.SpecificationAttributeOptionId, "IX_ClassifiedAd_SpecificationAttributeOption_Mapping_SpecificationAttributeOptionId");
 
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
@@ -598,6 +663,8 @@ namespace SAP.Persistence.Models
             {
                 entity.ToTable("ControlSetting");
 
+                entity.HasIndex(e => e.EntityId, "IX_ControlSetting_EntityId");
+
                 entity.Property(e => e.CreatedOn).HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.DefaultValue).HasMaxLength(150);
@@ -617,6 +684,12 @@ namespace SAP.Persistence.Models
             modelBuilder.Entity<Conversation>(entity =>
             {
                 entity.ToTable("Conversation");
+
+                entity.HasIndex(e => e.ClassifiedAdId, "IX_Conversation_ClassifiedAdId");
+
+                entity.HasIndex(e => e.FromUserId, "IX_Conversation_FromUserId");
+
+                entity.HasIndex(e => e.ToUserId, "IX_Conversation_ToUserId");
 
                 entity.Property(e => e.CreatedOn).HasDefaultValueSql("(getdate())");
 
@@ -722,6 +795,8 @@ namespace SAP.Persistence.Models
                 entity.Property(e => e.Name).HasMaxLength(50);
 
                 entity.Property(e => e.Rate).HasColumnType("decimal(18, 2)");
+
+                entity.Property(e => e.Symbol).HasMaxLength(50);
             });
 
             modelBuilder.Entity<CustomNotification>(entity =>
@@ -746,6 +821,10 @@ namespace SAP.Persistence.Models
                 entity.ToTable("Customer");
 
                 entity.HasIndex(e => new { e.CustomerGuid, e.Deleted }, "IX_Customer_CustomerGuid_Deleted");
+
+                entity.HasIndex(e => e.Email, "IX_Customer_Email")
+                    .IsUnique()
+                    .HasFilter("([Email] IS NOT NULL)");
 
                 entity.Property(e => e.AdminComment).HasMaxLength(150);
 
@@ -784,6 +863,9 @@ namespace SAP.Persistence.Models
 
                 entity.ToTable("Customer_Address_Mapping");
 
+                entity.HasIndex(e => e.AddressId, "IX_Customer_Address_Mapping_AddressId")
+                    .IsUnique();
+
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.CreatedOn).HasDefaultValueSql("(getdate())");
@@ -793,8 +875,8 @@ namespace SAP.Persistence.Models
                     .HasDefaultValueSql("(CONVERT([bit],(0)))");
 
                 entity.HasOne(d => d.Address)
-                    .WithMany(p => p.CustomerAddressMappings)
-                    .HasForeignKey(d => d.AddressId);
+                    .WithOne(p => p.CustomerAddressMapping)
+                    .HasForeignKey<CustomerAddressMapping>(d => d.AddressId);
 
                 entity.HasOne(d => d.Customer)
                     .WithMany(p => p.CustomerAddressMappings)
@@ -806,6 +888,8 @@ namespace SAP.Persistence.Models
                 entity.HasKey(e => new { e.CustomerId, e.CustomerRoleId, e.Id });
 
                 entity.ToTable("Customer_CustomerRole_Mapping");
+
+                entity.HasIndex(e => e.CustomerRoleId, "IX_Customer_CustomerRole_Mapping_CustomerRoleId");
 
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
@@ -827,6 +911,10 @@ namespace SAP.Persistence.Models
             modelBuilder.Entity<CustomerFavorite>(entity =>
             {
                 entity.ToTable("CustomerFavorite");
+
+                entity.HasIndex(e => e.ClassifiedAdId, "IX_CustomerFavorite_ClassifiedAdId");
+
+                entity.HasIndex(e => e.CustomerId, "IX_CustomerFavorite_CustomerId");
 
                 entity.Property(e => e.CreatedOn).HasDefaultValueSql("(getdate())");
 
@@ -868,7 +956,13 @@ namespace SAP.Persistence.Models
             {
                 entity.ToTable("CustomerSearch");
 
+                entity.HasIndex(e => e.CategoryId, "IX_CustomerSearch_CategoryId");
+
                 entity.HasIndex(e => e.CityId, "IX_CustomerSearch_CityId");
+
+                entity.HasIndex(e => e.CustomerId, "IX_CustomerSearch_CustomerId");
+
+                entity.HasIndex(e => e.LanguageId, "IX_CustomerSearch_LanguageId");
 
                 entity.HasIndex(e => e.StoreId, "IX_CustomerSearch_StoreId");
 
@@ -992,6 +1086,8 @@ namespace SAP.Persistence.Models
 
                 entity.Property(e => e.Password).HasMaxLength(1500);
 
+                entity.Property(e => e.ServiceProvider).HasComment("Smtp = 0, SmartEmailing = 1");
+
                 entity.Property(e => e.Username).HasMaxLength(50);
             });
 
@@ -1023,6 +1119,13 @@ namespace SAP.Persistence.Models
             {
                 entity.ToTable("ES_Alias_Index_Language_Mapping");
 
+                entity.HasIndex(e => new { e.Alias, e.IndexTypeId }, "IX_ES_Alias_Index_Language_Mapping_Alias_IndexTypeId")
+                    .IsUnique();
+
+                entity.HasIndex(e => e.IndexTypeId, "IX_ES_Alias_Index_Language_Mapping_IndexTypeId");
+
+                entity.HasIndex(e => e.LanguageId, "IX_ES_Alias_Index_Language_Mapping_LanguageId");
+
                 entity.Property(e => e.Alias)
                     .IsRequired()
                     .HasMaxLength(256);
@@ -1050,20 +1153,26 @@ namespace SAP.Persistence.Models
             {
                 entity.ToTable("ES_Index_Type");
 
+                entity.HasIndex(e => e.Type, "IX_ES_Index_Type_Type")
+                    .IsUnique();
+
                 entity.Property(e => e.CreatedOn).HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.Deleted)
                     .IsRequired()
                     .HasDefaultValueSql("(CONVERT([bit],(0)))");
 
-                entity.Property(e => e.Type)
-                    .IsRequired()
-                    .HasMaxLength(450);
+                entity.Property(e => e.Type).IsRequired();
             });
 
             modelBuilder.Entity<EsoperationClassifiedAd>(entity =>
             {
                 entity.ToTable("ESOperationClassifiedAd");
+
+                entity.HasIndex(e => e.ClassifiedAdId, "IX_ESOperationClassifiedAd_ClassifiedAdId")
+                    .IsUnique();
+
+                entity.HasIndex(e => e.OperationTypeId, "IX_ESOperationClassifiedAd_OperationTypeId");
 
                 entity.Property(e => e.CreatedOn).HasDefaultValueSql("(getdate())");
 
@@ -1072,8 +1181,8 @@ namespace SAP.Persistence.Models
                     .HasDefaultValueSql("(CONVERT([bit],(0)))");
 
                 entity.HasOne(d => d.ClassifiedAd)
-                    .WithMany(p => p.EsoperationClassifiedAds)
-                    .HasForeignKey(d => d.ClassifiedAdId);
+                    .WithOne(p => p.EsoperationClassifiedAd)
+                    .HasForeignKey<EsoperationClassifiedAd>(d => d.ClassifiedAdId);
 
                 entity.HasOne(d => d.OperationType)
                     .WithMany(p => p.EsoperationClassifiedAds)
@@ -1097,6 +1206,8 @@ namespace SAP.Persistence.Models
             modelBuilder.Entity<Follow>(entity =>
             {
                 entity.ToTable("Follow");
+
+                entity.HasIndex(e => e.FromCustomerId, "IX_Follow_FromCustomerId");
 
                 entity.HasIndex(e => new { e.ToCustomerId, e.FromCustomerId, e.Deleted }, "IX_Follow_ToCustomerId_FromCustomerId_Deleted");
 
@@ -1163,6 +1274,9 @@ namespace SAP.Persistence.Models
                     .IsUnique();
 
                 entity.HasIndex(e => e.CustomerId, "IX_Invoice_CustomerId");
+
+                entity.HasIndex(e => e.InvoiceNumber, "IX_Invoice_InvoiceNumber")
+                    .IsUnique();
 
                 entity.Property(e => e.BoostingClassifiedAdMappingId).HasColumnName("Boosting_ClassifiedAd_MappingId");
 
@@ -1243,6 +1357,8 @@ namespace SAP.Persistence.Models
             {
                 entity.ToTable("Language");
 
+                entity.HasIndex(e => e.DefaultCurrencyId, "IX_Language_DefaultCurrencyId");
+
                 entity.HasIndex(e => e.Deleted, "IX_Language_Deleted");
 
                 entity.HasIndex(e => new { e.Deleted, e.DisplayOrder }, "IX_Language_Deleted_DisplayOrder");
@@ -1287,6 +1403,10 @@ namespace SAP.Persistence.Models
             {
                 entity.ToTable("LocaleStringResourceControl");
 
+                entity.HasIndex(e => e.ControlSettingId, "IX_LocaleStringResourceControl_ControlSettingId");
+
+                entity.HasIndex(e => e.LanguageId, "IX_LocaleStringResourceControl_LanguageId");
+
                 entity.Property(e => e.CreatedOn).HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.Deleted)
@@ -1310,6 +1430,10 @@ namespace SAP.Persistence.Models
             {
                 entity.ToTable("LocaleStringResourceSetting");
 
+                entity.HasIndex(e => e.LanguageId, "IX_LocaleStringResourceSetting_LanguageId");
+
+                entity.HasIndex(e => e.SettingId, "IX_LocaleStringResourceSetting_SettingId");
+
                 entity.Property(e => e.CreatedOn).HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.Deleted)
@@ -1326,25 +1450,6 @@ namespace SAP.Persistence.Models
                 entity.HasOne(d => d.Setting)
                     .WithMany(p => p.LocaleStringResourceSettings)
                     .HasForeignKey(d => d.SettingId);
-            });
-
-            modelBuilder.Entity<LocalizationKeyStaticLocaleStringResourceMapping>(entity =>
-            {
-                entity.ToTable("LocalizationKey_StaticLocaleStringResource_Mapping");
-
-                entity.Property(e => e.CreatedOn).HasDefaultValueSql("(getdate())");
-
-                entity.Property(e => e.Deleted)
-                    .IsRequired()
-                    .HasDefaultValueSql("(CONVERT([bit],(0)))");
-
-                entity.Property(e => e.LocalizationKey)
-                    .IsRequired()
-                    .HasMaxLength(450);
-
-                entity.HasOne(d => d.StaticLocaleStringResource)
-                    .WithMany(p => p.LocalizationKeyStaticLocaleStringResourceMappings)
-                    .HasForeignKey(d => d.StaticLocaleStringResourceId);
             });
 
             modelBuilder.Entity<LocalizedProperty>(entity =>
@@ -1368,6 +1473,8 @@ namespace SAP.Persistence.Models
 
             modelBuilder.Entity<Log>(entity =>
             {
+                entity.HasIndex(e => e.LogLevelId, "IX_Logs_LogLevelId");
+
                 entity.Property(e => e.CreatedOn).HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.Deleted)
@@ -1411,6 +1518,8 @@ namespace SAP.Persistence.Models
             {
                 entity.ToTable("Message");
 
+                entity.HasIndex(e => e.ConversationId, "IX_Message_ConversationId");
+
                 entity.Property(e => e.CreatedOn).HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.Deleted)
@@ -1437,6 +1546,8 @@ namespace SAP.Persistence.Models
             modelBuilder.Entity<MessageTemplate>(entity =>
             {
                 entity.ToTable("MessageTemplate");
+
+                entity.HasIndex(e => e.EmailAccountId, "IX_MessageTemplate_EmailAccountId");
 
                 entity.Property(e => e.BccEmailAddresses).HasMaxLength(2048);
 
@@ -1478,6 +1589,8 @@ namespace SAP.Persistence.Models
 
             modelBuilder.Entity<Notification>(entity =>
             {
+                entity.HasIndex(e => e.NotificationId, "IX_Notifications_NotificationId");
+
                 entity.Property(e => e.CreatedOn).HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.Deleted)
@@ -1514,21 +1627,15 @@ namespace SAP.Persistence.Models
             {
                 entity.ToTable("Payment");
 
-                entity.HasIndex(e => e.PaymentId, "IX_Payment_PaymentId");
+                entity.HasIndex(e => e.CustomerId, "IX_Payment_CustomerId");
 
-                entity.Property(e => e.AccountNumber).HasMaxLength(150);
+                entity.HasIndex(e => e.ParentTablePaymentId, "IX_Payment_ParentTablePaymentId");
+
+                entity.HasIndex(e => e.PaymentId, "IX_Payment_PaymentId");
 
                 entity.Property(e => e.AdditionalParams).HasMaxLength(1000);
 
                 entity.Property(e => e.Amount).HasColumnType("decimal(18, 4)");
-
-                entity.Property(e => e.CardBrand).HasMaxLength(150);
-
-                entity.Property(e => e.CardExpiration).HasMaxLength(50);
-
-                entity.Property(e => e.CardIssuerBank).HasMaxLength(150);
-
-                entity.Property(e => e.CardNumber).HasMaxLength(100);
 
                 entity.Property(e => e.CreatedOn).HasDefaultValueSql("(getdate())");
 
@@ -1554,16 +1661,55 @@ namespace SAP.Persistence.Models
                     .HasForeignKey(d => d.ParentTablePaymentId);
             });
 
+            modelBuilder.Entity<PaymentCard>(entity =>
+            {
+                entity.ToTable("PaymentCard");
+
+                entity.Property(e => e.AccountNumber).HasMaxLength(150);
+
+                entity.Property(e => e.CardBrand).HasMaxLength(150);
+
+                entity.Property(e => e.CardExpiration).HasMaxLength(50);
+
+                entity.Property(e => e.CardIssuerBank).HasMaxLength(150);
+
+                entity.Property(e => e.CardNumber).HasMaxLength(100);
+
+                entity.Property(e => e.CardToken).HasMaxLength(1000);
+
+                entity.Property(e => e.CreatedOn).HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.Deleted)
+                    .IsRequired()
+                    .HasDefaultValueSql("(CONVERT([bit],(0)))");
+
+                entity.Property(e => e.ThreeDresult)
+                    .HasMaxLength(1000)
+                    .HasColumnName("ThreeDResult");
+            });
+
             modelBuilder.Entity<PaymentInfo>(entity =>
             {
                 entity.ToTable("PaymentInfo");
 
+                entity.HasIndex(e => e.BoostingPlanId, "IX_PaymentInfo_BoostingPlanId");
+
                 entity.HasIndex(e => e.BoostingPlanClassifiedAdMappingId, "IX_PaymentInfo_BoostingPlan_ClassifiedAd_MappingId");
+
+                entity.HasIndex(e => e.ClassifiedAdId, "IX_PaymentInfo_ClassifiedAdId");
 
                 entity.HasIndex(e => e.CountryId, "IX_PaymentInfo_CountryId");
 
+                entity.HasIndex(e => e.CurrencyId, "IX_PaymentInfo_CurrencyId");
+
+                entity.HasIndex(e => e.CustomerId, "IX_PaymentInfo_CustomerId");
+
+                entity.HasIndex(e => e.LanguageId, "IX_PaymentInfo_LanguageId");
+
                 entity.HasIndex(e => e.PaymentTableId, "IX_PaymentInfo_PaymentTableId")
                     .IsUnique();
+
+                entity.HasIndex(e => e.StoreId, "IX_PaymentInfo_StoreId");
 
                 entity.Property(e => e.BoostingPlanClassifiedAdMappingId).HasColumnName("BoostingPlan_ClassifiedAd_MappingId");
 
@@ -1644,6 +1790,8 @@ namespace SAP.Persistence.Models
 
                 entity.ToTable("PermissionRecord_CustomerRole_Mapping");
 
+                entity.HasIndex(e => e.CustomerRoleId, "IX_PermissionRecord_CustomerRole_Mapping_CustomerRoleId");
+
                 entity.Property(e => e.Id).ValueGeneratedOnAdd();
 
                 entity.Property(e => e.CreatedOn).HasDefaultValueSql("(getdate())");
@@ -1711,6 +1859,12 @@ namespace SAP.Persistence.Models
             {
                 entity.ToTable("Report");
 
+                entity.HasIndex(e => e.EntityId, "IX_Report_EntityId");
+
+                entity.HasIndex(e => e.FromCustomerId, "IX_Report_FromCustomerId");
+
+                entity.HasIndex(e => e.ReportTypeId, "IX_Report_ReportTypeId");
+
                 entity.Property(e => e.CreatedOn).HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.Deleted)
@@ -1765,6 +1919,13 @@ namespace SAP.Persistence.Models
             modelBuilder.Entity<ReviewsCustomerMapping>(entity =>
             {
                 entity.ToTable("Reviews_Customer_Mapping");
+
+                entity.HasIndex(e => new { e.FromCustomerId, e.ToCustomerId }, "IX_Reviews_Customer_Mapping_FromCustomerId_ToCustomerId")
+                    .IsUnique();
+
+                entity.HasIndex(e => e.ReviewId, "IX_Reviews_Customer_Mapping_ReviewId");
+
+                entity.HasIndex(e => e.ToCustomerId, "IX_Reviews_Customer_Mapping_ToCustomerId");
 
                 entity.Property(e => e.CreatedOn).HasDefaultValueSql("(getdate())");
 
@@ -2117,6 +2278,10 @@ namespace SAP.Persistence.Models
             {
                 entity.ToTable("SearchFilter");
 
+                entity.HasIndex(e => e.SearchId, "IX_SearchFilter_SearchId");
+
+                entity.HasIndex(e => e.SpecificationOptionId, "IX_SearchFilter_SpecificationOptionId");
+
                 entity.HasOne(d => d.Search)
                     .WithMany(p => p.SearchFilters)
                     .HasForeignKey(d => d.SearchId);
@@ -2204,6 +2369,10 @@ namespace SAP.Persistence.Models
             {
                 entity.ToTable("Setting");
 
+                entity.HasIndex(e => e.ControlSettingId, "IX_Setting_ControlSettingId");
+
+                entity.HasIndex(e => e.DataAnnotationTypeId, "IX_Setting_DataAnnotationTypeId");
+
                 entity.Property(e => e.CreatedOn).HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.Deleted)
@@ -2226,6 +2395,8 @@ namespace SAP.Persistence.Models
             modelBuilder.Entity<SpecificationAttribute>(entity =>
             {
                 entity.ToTable("SpecificationAttribute");
+
+                entity.HasIndex(e => e.ParentSpecificationAttributeId, "IX_SpecificationAttribute_ParentSpecificationAttributeId");
 
                 entity.HasIndex(e => e.SecondaryId, "IX_SpecificationAttribute_SecondaryId")
                     .IsUnique()
@@ -2250,9 +2421,13 @@ namespace SAP.Persistence.Models
             {
                 entity.ToTable("SpecificationAttributeOption");
 
+                entity.HasIndex(e => e.ParentSpecificationAttributeOptionId, "IX_SpecificationAttributeOption_ParentSpecificationAttributeOptionId");
+
                 entity.HasIndex(e => e.SecondaryId, "IX_SpecificationAttributeOption_SecondaryId")
                     .IsUnique()
                     .HasFilter("([SecondaryId] IS NOT NULL)");
+
+                entity.HasIndex(e => e.SpecificationAttributeId, "IX_SpecificationAttributeOption_SpecificationAttributeId");
 
                 entity.Property(e => e.ChainedAncestorString)
                     .IsRequired()
@@ -2329,6 +2504,8 @@ namespace SAP.Persistence.Models
             {
                 entity.ToTable("StaticLocaleStringResource");
 
+                entity.HasIndex(e => e.LanguageId, "IX_StaticLocaleStringResource_LanguageId");
+
                 entity.Property(e => e.CreatedOn).HasDefaultValueSql("(getdate())");
 
                 entity.Property(e => e.Deleted)
@@ -2363,6 +2540,8 @@ namespace SAP.Persistence.Models
             {
                 entity.ToTable("Store");
 
+                entity.HasIndex(e => e.DefaultLanguageId, "IX_Store_DefaultLanguageId");
+
                 entity.HasIndex(e => e.Deleted, "IX_Store_Deleted");
 
                 entity.HasIndex(e => new { e.Deleted, e.DisplayOrder }, "IX_Store_Deleted_DisplayOrder");
@@ -2396,8 +2575,16 @@ namespace SAP.Persistence.Models
             {
                 entity.ToTable("StoreInformation");
 
+                entity.HasIndex(e => e.CityId, "IX_StoreInformation_CityId");
+
+                entity.HasIndex(e => e.CountryId, "IX_StoreInformation_CountryId");
+
                 entity.HasIndex(e => e.StoreId, "IX_StoreInformation_StoreId")
                     .IsUnique();
+
+                entity.Property(e => e.AddressName).HasMaxLength(500);
+
+                entity.Property(e => e.BusinessId).HasMaxLength(100);
 
                 entity.Property(e => e.CreatedOn).HasDefaultValueSql("(getdate())");
 
@@ -2405,12 +2592,29 @@ namespace SAP.Persistence.Models
                     .IsRequired()
                     .HasDefaultValueSql("(CONVERT([bit],(0)))");
 
+                entity.Property(e => e.Logo).HasMaxLength(2000);
+
+                entity.Property(e => e.RegisteredOffice).HasMaxLength(2000);
+
+                entity.Property(e => e.SmartEmailingEmail).HasMaxLength(100);
+
                 entity.Property(e => e.StoreOrderNumber).HasMaxLength(10);
+
+                entity.Property(e => e.TaxRate).HasColumnType("decimal(18, 2)");
+
+                entity.HasOne(d => d.City)
+                    .WithMany(p => p.StoreInformations)
+                    .HasForeignKey(d => d.CityId)
+                    .OnDelete(DeleteBehavior.ClientSetNull);
+
+                entity.HasOne(d => d.Country)
+                    .WithMany(p => p.StoreInformations)
+                    .HasForeignKey(d => d.CountryId)
+                    .OnDelete(DeleteBehavior.ClientSetNull);
 
                 entity.HasOne(d => d.Store)
                     .WithOne(p => p.StoreInformation)
-                    .HasForeignKey<StoreInformation>(d => d.StoreId)
-                    .OnDelete(DeleteBehavior.ClientSetNull);
+                    .HasForeignKey<StoreInformation>(d => d.StoreId);
             });
 
             modelBuilder.Entity<StoreMapping>(entity =>
@@ -2474,9 +2678,14 @@ namespace SAP.Persistence.Models
             {
                 entity.ToTable("TransactionHistory");
 
+                entity.HasIndex(e => e.BoostingPlanId, "IX_TransactionHistory_BoostingPlanId");
+
                 entity.HasIndex(e => new { e.CreatedOn, e.Deleted }, "IX_TransactionHistory_CreatedOn_Deleted");
 
                 entity.HasIndex(e => e.CustomerId, "IX_TransactionHistory_CustomerId");
+
+                entity.HasIndex(e => e.PaymentTableId, "IX_TransactionHistory_PaymentTableId")
+                    .IsUnique();
 
                 entity.HasIndex(e => e.StoreId, "IX_TransactionHistory_StoreId");
 
@@ -2501,8 +2710,8 @@ namespace SAP.Persistence.Models
                     .OnDelete(DeleteBehavior.ClientSetNull);
 
                 entity.HasOne(d => d.PaymentTable)
-                    .WithMany(p => p.TransactionHistories)
-                    .HasForeignKey(d => d.PaymentTableId);
+                    .WithOne(p => p.TransactionHistory)
+                    .HasForeignKey<TransactionHistory>(d => d.PaymentTableId);
 
                 entity.HasOne(d => d.Store)
                     .WithMany(p => p.TransactionHistories)
