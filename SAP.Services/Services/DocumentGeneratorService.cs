@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using SAP.Core.Configuration;
 using SAP.Core.Enum;
+using SAP.Core.Models;
 using SAP.Models.DTOs.Request.Transactions;
 using SAP.Models.Response;
 using SAP.Persistence.Models;
@@ -21,6 +22,8 @@ namespace SAP.Services.Services
     public class DocumentGeneratorService : IDocumentGeneratorService
     {
         #region Properties
+
+        readonly EcommerceClientContext _context = new();
 
         private readonly ITransactionHistoryService _transactionHistoryService;
         private readonly IConfiguration _configuration;
@@ -182,6 +185,33 @@ namespace SAP.Services.Services
             //    Port = 21
             //};
             return ftpServerConfig;
+        }
+
+        public async Task<Response<DocumentTypeGenerator>> GetTypeOfDocumentToGenerate(TransactionRequestModel requestModel, CancellationToken cancellationToken)
+        {
+            var documentTypeGenerator = new DocumentTypeGenerator();
+
+            var paymentsWithDeferredRevenueExists = await _context.Payments.Where(x => x.CreatedOn >= requestModel.DateFrom &&
+                                                                                       x.CreatedOn <= requestModel.DateTo &&
+                                                                                       x.Deleted == false &&
+                                                                                       x.IsDeferredRevenue == true &&
+                                                                                       x.PaymentStatus == (int)PaymentStateEnum.PAID).AnyAsync(cancellationToken);
+            if (paymentsWithDeferredRevenueExists)
+            {
+                return new Response<DocumentTypeGenerator>(new DocumentTypeGenerator { HasDeferredRevenueInThisInterval = paymentsWithDeferredRevenueExists });
+            }
+
+            var hasPreviousDeferredRevenue = await _context.DeferredRevenues.Where(x => x.DeferredRevenueDate >= requestModel.DateFrom &&
+                                                                                       x.DeferredRevenueDate <= requestModel.DateTo &&
+                                                                                       x.Deleted == false).AnyAsync(cancellationToken);
+
+            if(hasPreviousDeferredRevenue)
+            {
+                return new Response<DocumentTypeGenerator>(new DocumentTypeGenerator { HasPreviousDeferredRevenue = hasPreviousDeferredRevenue });
+            }
+
+
+            return new Response<DocumentTypeGenerator>(new DocumentTypeGenerator { OnlyActualRevenue = true });
         }
 
         #endregion

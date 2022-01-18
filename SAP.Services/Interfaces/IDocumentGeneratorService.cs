@@ -1,4 +1,5 @@
-﻿using SAP.Models.DTOs.Request.Transactions;
+﻿using SAP.Core.Models;
+using SAP.Models.DTOs.Request.Transactions;
 using SAP.Models.Response;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ namespace SAP.Services.Interfaces
 {
     public interface IDocumentGeneratorService
     {
+        Task<Response<DocumentTypeGenerator>> GetTypeOfDocumentToGenerate(TransactionRequestModel requestModel, CancellationToken cancellationToken);
         Task<Response<string>> ReportAllRevenue(List<SapInterfaceModel> sapInterfaceList, CancellationToken cancellationToken);
         Task<Response<string>> ReportDeferredRevenues(TransactionRequestModel transactionRequestModel, CancellationToken cancellationToken);
         Task<Response<string>> ReportActualRevenues(TransactionRequestModel transactionRequestModel, CancellationToken cancellationToken);

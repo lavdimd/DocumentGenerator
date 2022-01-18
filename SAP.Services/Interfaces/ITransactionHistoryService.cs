@@ -13,8 +13,10 @@ namespace SAP.Services.Interfaces
     {
         Task<Response<List<CustomTransactionSummaryModel>>> GetActualRevenuesWithinSpecificPeriod(TransactionRequestModel transactionRequestModel, bool asNoTracking = false, CancellationToken cancellationToken = default);
         Task<Response<List<CustomTransactionSummaryModel>>> GetFromDeferredRevenuesWithinSpecificPeriod(TransactionRequestModel transactionRequestModel, CancellationToken cancellationToken);
+        Task<Response<List<CustomTransactionSummaryModel>>> GetFromDeferredRevenuesWithinSpecificPeriodCreditRevenues(TransactionRequestModel transactionRequestModel, CancellationToken cancellationToken);
         Task<Response<List<CustomTransactionSummaryModel>>> GetDeferredRevenuesWithinSpecificPeriod(TransactionRequestModel transactionRequestModel, CancellationToken cancellationToken);
         Task<Response<List<CustomTransactionSummaryModel>>> GetAllPaymentsWithinSpecificPeriod(TransactionRequestModel transactionRequestModel, CancellationToken cancellationToken);
+        Task<Response<List<CustomTransactionSummaryModel>>> GetAllPaymentsWithinSpecificPeriodWhenDeferredRevenuesExist(TransactionRequestModel transactionRequestModel, CancellationToken cancellationToken);
 
 
     }

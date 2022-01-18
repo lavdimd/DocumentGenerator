@@ -18,5 +18,6 @@ namespace SAP.Models.DTOs.Request.Transactions
         public decimal TaxAmountInLocalCurrency { get; set; }
         public string StoreOrderNumber { get; set; }
         public SapInterfaceObjects SapInterfaceType { get; set; }
+        public bool IsDeferred { get; set; }
     }
 }

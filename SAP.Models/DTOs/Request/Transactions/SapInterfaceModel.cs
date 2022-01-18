@@ -53,5 +53,7 @@ namespace SAP.Models.DTOs.Request.Transactions
         public string ZLSPR { get; set; } = "Payment Block Key";
         public string PROJK { get; set; } = "WBS element";
         public string BARCD { get; set; } = "Bar code (for Livelink archive)";
+
+        public bool IsDeferred { get; set; }
     }
 }

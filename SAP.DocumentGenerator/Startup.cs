@@ -9,6 +9,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using SAP.Configuration.Extensions;
+using SAP.Configuration.Filters;
+using SAP.Configuration.Middlewares;
 using SAP.Core.Configuration;
 using SAP.Models.Mapping;
 using SAP.Services.Interfaces;
@@ -48,6 +50,7 @@ namespace SAP.DocumentGenerator
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "SAP.DocumentGenerator", Version = "v1" });
+                c.OperationFilter<ApiAuthorizationHeaderParameter>();
             });
         }
 
@@ -64,6 +67,8 @@ namespace SAP.DocumentGenerator
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthorization();
+
+            app.UseMiddleware<ApiKeyAuthorizationMiddleware>();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

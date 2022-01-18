@@ -22,6 +22,7 @@ namespace SAP.Configuration.Extensions
             services.AddScoped<ILogService, LogService>();
             services.AddScoped<IStoreService, StoreService>();
             services.AddScoped<IStaticSettingService, StaticSettingService>();
+            services.AddScoped<IRevenueCalculatorHelper, RevenueCalculatorHelper>();
         }
 
         public static void RegisterPlatformJobServices(this IServiceCollection services)
