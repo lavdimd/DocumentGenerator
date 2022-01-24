@@ -4,6 +4,7 @@ using SAP.Core.Enum;
 using SAP.Models.DTOs.Request.Transactions;
 using SAP.Models.Response;
 using SAP.Persistence.Models;
+using SAP.Services.Helpers;
 using SAP.Services.Helpers.Interfaces;
 using SAP.Services.Interfaces;
 using System;
@@ -109,8 +110,8 @@ namespace SAP.Services.Services
             {
                 await _logService.AddLogAsync(
                     logLevel: LogLevelConstants.SapApiError,
-                    shortMessage: $"Something went wrong on method: {MethodBase.GetCurrentMethod()}",
-                    fullMessage: $"Full error information for error on method: {MethodBase.GetCurrentMethod()} /n" +
+                    shortMessage: $"Something went wrong on method: {MethodNameHelper.GetMethodName()}",
+                    fullMessage: $"Full error information for error on method: {MethodNameHelper.GetMethodName()} /n" +
                     $"Exception Message: {ex.Message} /n " +
                     $"Inner Exception: {ex.InnerException?.Message}",
                     cancellationToken);
@@ -188,8 +189,8 @@ namespace SAP.Services.Services
             {
                 await _logService.AddLogAsync(
                     logLevel: LogLevelConstants.SapApiError,
-                    shortMessage: $"Something went wrong on method: {MethodBase.GetCurrentMethod()}",
-                    fullMessage: $"Full error information for error on method: {MethodBase.GetCurrentMethod()} /n" +
+                    shortMessage: $"Something went wrong on method: {MethodNameHelper.GetMethodName()}",
+                    fullMessage: $"Full error information for error on method: {MethodNameHelper.GetMethodName()} /n" +
                     $"Exception Message: {ex.Message} /n " +
                     $"Inner Exception: {ex.InnerException?.Message}",
                     cancellationToken);
@@ -267,8 +268,8 @@ namespace SAP.Services.Services
             {
                 await _logService.AddLogAsync(
                     logLevel: LogLevelConstants.SapApiError,
-                    shortMessage: $"Something went wrong on method: {MethodBase.GetCurrentMethod()}",
-                    fullMessage: $"Full error information for error on method: {MethodBase.GetCurrentMethod()} /n" +
+                    shortMessage: $"Something went wrong on method: {MethodNameHelper.GetMethodName()}",
+                    fullMessage: $"Full error information for error on method: {MethodNameHelper.GetMethodName()} /n" +
                     $"Exception Message: {ex.Message} /n " +
                     $"Inner Exception: {ex.InnerException?.Message}",
                     cancellationToken);
@@ -342,8 +343,8 @@ namespace SAP.Services.Services
             {
                 await _logService.AddLogAsync(
                     logLevel: LogLevelConstants.SapApiError,
-                    shortMessage: $"Something went wrong on method: {MethodBase.GetCurrentMethod()}",
-                    fullMessage: $"Full error information for error on method: {MethodBase.GetCurrentMethod()} /n" +
+                    shortMessage: $"Something went wrong on method: {MethodNameHelper.GetMethodName()}",
+                    fullMessage: $"Full error information for error on method: {MethodNameHelper.GetMethodName()} /n" +
                     $"Exception Message: {ex.Message} /n " +
                     $"Inner Exception: {ex.InnerException?.Message}",
                     cancellationToken);
@@ -412,8 +413,8 @@ namespace SAP.Services.Services
             {
                 await _logService.AddLogAsync(
                     logLevel: LogLevelConstants.SapApiError,
-                    shortMessage: $"Something went wrong on method: {MethodBase.GetCurrentMethod()}",
-                    fullMessage: $"Full error information for error on method: {MethodBase.GetCurrentMethod()} /n" +
+                    shortMessage: $"Something went wrong on method: {MethodNameHelper.GetMethodName()}",
+                    fullMessage: $"Full error information for error on method: {MethodNameHelper.GetMethodName()} /n" +
                     $"Exception Message: {ex.Message} /n " +
                     $"Inner Exception: {ex.InnerException?.Message}",
                     cancellationToken);
@@ -448,7 +449,7 @@ namespace SAP.Services.Services
                 foreach (var transaction in dataGrouped)
                 {
                     var store = await _context.StoreInformations.FirstOrDefaultAsync(x => x.StoreId == transaction.Key.StoreId);
-                    //var currency = await _context.Currencies.FirstOrDefaultAsync(x => x.Id == transaction.Key.CurrencyId);
+                    var currency = await _context.Currencies.FirstOrDefaultAsync(x => x.Id == transaction.Key.CurrencyId);
                     var country = await _context.Countries.FirstOrDefaultAsync(x => x.Id == transaction.Key.CountryId);
 
                     var revenuesGroupedByCurrencyCountryStore = revenuesWithinPeriod.Where(
@@ -465,7 +466,7 @@ namespace SAP.Services.Services
                     {
                         TotalAmount = (decimal)netPrice,
                         NoOfRecords = revenuesGroupedByCurrencyCountryStore.Count,
-                        //Currency = currency.CurrencyCode,
+                        Currency = currency.CurrencyCode,
                         CountryCode = country.TwoLetterIsoCode,
                         StoreOrderNumber = store.StoreOrderNumber ?? "",
                         VATrate = country.Vatrate,
@@ -483,8 +484,8 @@ namespace SAP.Services.Services
             {
                 await _logService.AddLogAsync(
                     logLevel: LogLevelConstants.SapApiError,
-                    shortMessage: $"Something went wrong on method: {MethodBase.GetCurrentMethod()}",
-                    fullMessage: $"Full error information for error on method: {MethodBase.GetCurrentMethod()} /n" +
+                    shortMessage: $"Something went wrong on method: {MethodNameHelper.GetMethodName()}",
+                    fullMessage: $"Full error information for error on method: {MethodNameHelper.GetMethodName()} /n" +
                     $"Exception Message: {ex.Message} /n " +
                     $"Inner Exception: {ex.InnerException?.Message}",
                     cancellationToken);

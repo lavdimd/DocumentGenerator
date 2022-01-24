@@ -141,13 +141,13 @@ namespace SAP.Services.Helpers
             {
                 await _logService.AddLogAsync(
                     logLevel: LogLevelConstants.SapApiError,
-                    shortMessage: $"Something went wrong on method: {MethodBase.GetCurrentMethod()}",
-                    fullMessage: $"Full error information for error on method: {MethodBase.GetCurrentMethod()} /n" +
+                    shortMessage: $"Something went wrong on method: {MethodNameHelper.GetMethodName()}",
+                    fullMessage: $"Full error information for error on method: {MethodNameHelper.GetMethodName()} /n" +
                     $"Exception Message: {ex.Message} /n " +
                     $"Inner Exception: {ex.InnerException?.Message}",
                     cancellationToken);
 
-                return new Response<List<SapInterfaceModel>>(null, message: "Something went wrong! Please see Logs for more detailed information.");
+                return new Response<List<SapInterfaceModel>>(null, message: "Something went wrong! Please see Logs for more detailed information.", statusCode: (int)HttpStatusCode.BadRequest);
             }
         }
 
@@ -242,13 +242,13 @@ namespace SAP.Services.Helpers
             {
                 await _logService.AddLogAsync(
                     logLevel: LogLevelConstants.SapApiError,
-                    shortMessage: $"Something went wrong on method: {MethodBase.GetCurrentMethod()}",
-                    fullMessage: $"Full error information for error on method: {MethodBase.GetCurrentMethod()} /n" +
+                    shortMessage: $"Something went wrong on method: {MethodNameHelper.GetMethodName()}",
+                    fullMessage: $"Full error information for error on method: {MethodNameHelper.GetMethodName()} /n" +
                     $"Exception Message: {ex.Message} /n " +
                     $"Inner Exception: {ex.InnerException?.Message}",
                     cancellationToken);
 
-                return new Response<List<SapInterfaceModel>>(null, message: "Something went wrong! Please see Logs for more detailed information.");
+                return new Response<List<SapInterfaceModel>>(null, message: "Something went wrong! Please see Logs for more detailed information.", statusCode: (int)HttpStatusCode.BadRequest);
             }
         }
 
@@ -289,7 +289,7 @@ namespace SAP.Services.Helpers
 
                 var transactionsGrouped = customTransactionSummaryList.GroupBy(x => new {
                                                                                             //x.ExternalCodeForSAP,
-                                                                                            //x.Currency,
+                                                                                            x.Currency,
                                                                                             x.StoreOrderNumber
                                                                                 });
 
@@ -299,7 +299,7 @@ namespace SAP.Services.Helpers
                     {
                         TotalAmount = (decimal)transaction.Sum(x => x.TotalAmount),
                         NoOfRecords = transaction.Count(),
-                        //Currency = transaction.Key.Currency,
+                        Currency = transaction.Key.Currency,
                         VATrate = transaction.FirstOrDefault().VATrate,
                         StoreOrderNumber = transaction.Key.StoreOrderNumber,
                         //ExternalCodeForSAP = transaction.Key.ExternalCodeForSAP,
@@ -387,13 +387,13 @@ namespace SAP.Services.Helpers
             {
                 await _logService.AddLogAsync(
                     logLevel: LogLevelConstants.SapApiError,
-                    shortMessage: $"Something went wrong on method: {MethodBase.GetCurrentMethod()}",
-                    fullMessage: $"Full error information for error on method: {MethodBase.GetCurrentMethod()} /n" +
+                    shortMessage: $"Something went wrong on method: {MethodNameHelper.GetMethodName()}",
+                    fullMessage: $"Full error information for error on method: {MethodNameHelper.GetMethodName()} /n" +
                     $"Exception Message: {ex.Message} /n " +
                     $"Inner Exception: {ex.InnerException?.Message}",
                     cancellationToken);
 
-                return new Response<List<SapInterfaceModel>>(null, message: "Something went wrong! Please see Logs for more detailed information.");
+                return new Response<List<SapInterfaceModel>>(null, message: "Something went wrong! Please see Logs for more detailed information.", statusCode: (int)HttpStatusCode.BadRequest);
             }
         }
 
@@ -487,13 +487,13 @@ namespace SAP.Services.Helpers
             {
                 await _logService.AddLogAsync(
                       logLevel: LogLevelConstants.SapApiError,
-                      shortMessage: $"Something went wrong on method: {MethodBase.GetCurrentMethod()}",
-                      fullMessage: $"Full error information for error on method: {MethodBase.GetCurrentMethod()} /n" +
+                      shortMessage: $"Something went wrong on method: {MethodNameHelper.GetMethodName()}",
+                      fullMessage: $"Full error information for error on method: {MethodNameHelper.GetMethodName()} /n" +
                       $"Exception Message: {ex.Message} /n " +
                       $"Inner Exception: {ex.InnerException?.Message}",
                       cancellationToken);
 
-                return new Response<List<SapInterfaceModel>>(null, message: "Something went wrong! Please see Logs for more detailed information.");
+                return new Response<List<SapInterfaceModel>>(null, message: "Something went wrong! Please see Logs for more detailed information.", statusCode: (int)HttpStatusCode.BadRequest);
             }
         }
 
@@ -633,13 +633,13 @@ namespace SAP.Services.Helpers
             {
                 await _logService.AddLogAsync(
                     logLevel: LogLevelConstants.SapApiError,
-                    shortMessage: $"Something went wrong on method: {MethodBase.GetCurrentMethod()}",
-                    fullMessage: $"Full error information for error on method: {MethodBase.GetCurrentMethod()} /n" +
+                    shortMessage: $"Something went wrong on method: {MethodNameHelper.GetMethodName()}",
+                    fullMessage: $"Full error information for error on method: {MethodNameHelper.GetMethodName()} /n" +
                     $"Exception Message: {ex.Message} /n " +
                     $"Inner Exception: {ex.InnerException?.Message}",
                     cancellationToken);
 
-                return new Response<List<SapInterfaceModel>>(null, message: "Something went wrong! Please see Logs for more detailed information.");
+                return new Response<List<SapInterfaceModel>>(null, message: "Something went wrong! Please see Logs for more detailed information.", statusCode: (int)HttpStatusCode.BadRequest);
             }
         }
 
@@ -744,13 +744,13 @@ namespace SAP.Services.Helpers
             {
                 await _logService.AddLogAsync(
                   logLevel: LogLevelConstants.SapApiError,
-                  shortMessage: $"Something went wrong on method: {MethodBase.GetCurrentMethod()}",
-                  fullMessage: $"Full error information for error on method: {MethodBase.GetCurrentMethod()} /n" +
+                  shortMessage: $"Something went wrong on method: {MethodNameHelper.GetMethodName()}",
+                  fullMessage: $"Full error information for error on method: {MethodNameHelper.GetMethodName()} /n" +
                   $"Exception Message: {ex.Message} /n " +
                   $"Inner Exception: {ex.InnerException?.Message}",
                   cancellationToken);
 
-                return new Response<List<SapInterfaceModel>>(null, message: "Something went wrong! Please see Logs for more detailed information.");
+                return new Response<List<SapInterfaceModel>>(null, message: "Something went wrong! Please see Logs for more detailed information.", statusCode: (int)HttpStatusCode.BadRequest);
             }
         }
 
@@ -779,7 +779,7 @@ namespace SAP.Services.Helpers
 
                 var transactionsGrouped = customTransactionSummaryList.GroupBy(x => new {
                                                                                             //x.ExternalCodeForSAP,
-                                                                                            //x.Currency,
+                                                                                            x.Currency,
                                                                                             x.StoreOrderNumber
                                                                                         }
                                                                                );
@@ -790,7 +790,7 @@ namespace SAP.Services.Helpers
                     {
                         TotalAmount = (decimal)transaction.Sum(x => x.TotalAmount),
                         NoOfRecords = transaction.Count(),
-                        //Currency = transaction.Key.Currency,
+                        Currency = transaction.Key.Currency,
                         VATrate = transaction.FirstOrDefault().VATrate,
                         StoreOrderNumber = transaction.Key.StoreOrderNumber,
                         //ExternalCodeForSAP = transaction.Key.ExternalCodeForSAP,
@@ -879,13 +879,13 @@ namespace SAP.Services.Helpers
             {
                 await _logService.AddLogAsync(
                   logLevel: LogLevelConstants.SapApiError,
-                  shortMessage: $"Something went wrong on method: {MethodBase.GetCurrentMethod()}",
-                  fullMessage: $"Full error information for error on method: {MethodBase.GetCurrentMethod()} /n" +
+                  shortMessage: $"Something went wrong on method: {MethodNameHelper.GetMethodName()}",
+                  fullMessage: $"Full error information for error on method: {MethodNameHelper.GetMethodName()} /n" +
                   $"Exception Message: {ex.Message} /n " +
                   $"Inner Exception: {ex.InnerException?.Message}",
                   cancellationToken);
 
-                return new Response<List<SapInterfaceModel>>(null, message: "Something went wrong! Please see Logs for more detailed information.");
+                return new Response<List<SapInterfaceModel>>(null, message: "Something went wrong! Please see Logs for more detailed information.", statusCode: (int)HttpStatusCode.BadRequest);
             }
         }
 
@@ -925,7 +925,7 @@ namespace SAP.Services.Helpers
                     {
                         TotalAmount = (decimal)transaction.Sum(x => x.TotalAmount),
                         NoOfRecords = transaction.Count(),
-                        //Currency = transaction.Key.Currency,
+                        Currency = transaction.Key.Currency,
                         VATrate = transaction.FirstOrDefault().VATrate,
                         //StoreOrderNumber = transaction.Key.StoreOrderNumber,
                         //ExternalCodeForSAP = transaction.Key.ExternalCodeForSAP,
@@ -1014,20 +1014,20 @@ namespace SAP.Services.Helpers
             {
                 await _logService.AddLogAsync(
                    logLevel: LogLevelConstants.SapApiError,
-                   shortMessage: $"Something went wrong on method: {MethodBase.GetCurrentMethod()}",
-                   fullMessage: $"Full error information for error on method: {MethodBase.GetCurrentMethod()} /n" +
+                   shortMessage: $"Something went wrong on method: {MethodNameHelper.GetMethodName()}",
+                   fullMessage: $"Full error information for error on method: {MethodNameHelper.GetMethodName()} /n" +
                    $"Exception Message: {ex.Message} /n " +
                    $"Inner Exception: {ex.InnerException?.Message}",
                    cancellationToken);
 
-                return new Response<List<SapInterfaceModel>>(null, message: "Something went wrong! Please see Logs for more detailed information.");
+                return new Response<List<SapInterfaceModel>>(null, message: "Something went wrong! Please see Logs for more detailed information.", statusCode: (int)HttpStatusCode.BadRequest);
             }
         }
 
         #endregion
 
 
-        public async Task<Response<string>> PrepareCSVFile(List<SapInterfaceModel> sapInterfaceModels)
+        public Response<string> PrepareCSVFile(List<SapInterfaceModel> sapInterfaceModels)
         {
             var referenceNumber = GenerateReferenceNumber();
             var csv = "";

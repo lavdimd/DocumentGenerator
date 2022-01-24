@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using SAP.Core.Common.Constants;
 using SAP.Models.DTOs.Request.Transactions;
 using SAP.Persistence.Models;
+using SAP.Services.Helpers;
 using SAP.Services.Helpers.Interfaces;
 using SAP.Services.Interfaces;
 using System;
@@ -69,7 +70,7 @@ namespace SAP.DocumentGenerator.Controllers
                     var allRevenuesCollectedForThisInterval = await _documentGeneratorHelper.PrepareAllRevenuesWithinTimePeriod(requestModel, cancellationToken);
                     if (allRevenuesCollectedForThisInterval.StatusCode == (int)HttpStatusCode.BadRequest)
                     {
-                        return BadRequest("Something went wrong! See logs for more detail informations!");
+                        return BadRequest("Something went wrong! See logs for more detailed informations!");
                     }
 
                     if (allRevenuesCollectedForThisInterval.Data != null && allRevenuesCollectedForThisInterval.Data.Count != 0)
@@ -81,7 +82,7 @@ namespace SAP.DocumentGenerator.Controllers
                     var deferredRevenuesForThisInterval = await _documentGeneratorHelper.PreparePaymentsWithinSpecificPeriodWhenDeferredRevenuesExist(requestModel, cancellationToken);
                     if (deferredRevenuesForThisInterval.StatusCode == (int)HttpStatusCode.BadRequest)
                     {
-                        return BadRequest("Something went wrong! See logs for more detail informations!");
+                        return BadRequest("Something went wrong! See logs for more detailed informations!");
                     }
                     if (deferredRevenuesForThisInterval.Data != null && deferredRevenuesForThisInterval.Data.Count != 0)
                     {
@@ -92,7 +93,7 @@ namespace SAP.DocumentGenerator.Controllers
                     var actualRevenuesForThisIntervalWithDeferredRevenue = await _documentGeneratorHelper.PrepareRevenuesFromRegularAndDeferredDebitDeferredRevenues(requestModel, cancellationToken);
                     if (actualRevenuesForThisIntervalWithDeferredRevenue.StatusCode == (int)HttpStatusCode.BadRequest)
                     {
-                        return BadRequest("Something went wrong! See logs for more detail informations!");
+                        return BadRequest("Something went wrong! See logs for more detailed informations!");
                     }
                     if (actualRevenuesForThisIntervalWithDeferredRevenue.Data != null && actualRevenuesForThisIntervalWithDeferredRevenue.Data.Count != 0)
                     {
@@ -103,7 +104,7 @@ namespace SAP.DocumentGenerator.Controllers
                     var actualRevenuesForThisInterval = await _documentGeneratorHelper.PrepareActualRevenuesWithinTimePeriod(requestModel, cancellationToken);
                     if (actualRevenuesForThisInterval.StatusCode == (int)HttpStatusCode.BadRequest)
                     {
-                        return BadRequest("Something went wrong! See logs for more detail informations!");
+                        return BadRequest("Something went wrong! See logs for more detailed informations!");
                     }
                     if (actualRevenuesForThisInterval.Data != null && actualRevenuesForThisInterval.Data.Count != 0)
                     {
@@ -120,7 +121,7 @@ namespace SAP.DocumentGenerator.Controllers
                     var allRevenuesCollectedForThisInterval = await _documentGeneratorHelper.PrepareAllRevenuesWithinTimePeriod(requestModel, cancellationToken);
                     if (allRevenuesCollectedForThisInterval.StatusCode == (int)HttpStatusCode.BadRequest)
                     {
-                        return BadRequest("Something went wrong! See logs for more detail informations!");
+                        return BadRequest("Something went wrong! See logs for more detailed informations!");
                     }
 
                     if (allRevenuesCollectedForThisInterval.Data != null && allRevenuesCollectedForThisInterval.Data.Count != 0)
@@ -132,7 +133,7 @@ namespace SAP.DocumentGenerator.Controllers
                     var actualRevenuesForThisIntervalWithDeferredRevenue = await _documentGeneratorHelper.PrepareRevenuesFromDeferredDebitDeferredRevenues(requestModel, cancellationToken);
                     if (actualRevenuesForThisIntervalWithDeferredRevenue.StatusCode == (int)HttpStatusCode.BadRequest)
                     {
-                        return BadRequest("Something went wrong! See logs for more detail informations!");
+                        return BadRequest("Something went wrong! See logs for more detailed informations!");
                     }
                     if (actualRevenuesForThisIntervalWithDeferredRevenue.Data != null && actualRevenuesForThisIntervalWithDeferredRevenue.Data.Count != 0)
                     {
@@ -143,7 +144,7 @@ namespace SAP.DocumentGenerator.Controllers
                     var actualRevenuesFromDeferredForThisInterval = await _documentGeneratorHelper.PrepareActualRevenuesFromDeferredRevenuesCreditRevenues(requestModel, cancellationToken);
                     if (actualRevenuesFromDeferredForThisInterval.StatusCode == (int)HttpStatusCode.BadRequest)
                     {
-                        return BadRequest("Something went wrong! See logs for more detail informations!");
+                        return BadRequest("Something went wrong! See logs for more detailed informations!");
                     }
                     if (actualRevenuesFromDeferredForThisInterval.Data != null && actualRevenuesFromDeferredForThisInterval.Data.Count != 0)
                     {
@@ -153,7 +154,7 @@ namespace SAP.DocumentGenerator.Controllers
                     var actualRevenuesForThisInterval = await _documentGeneratorHelper.PrepareRegularRevenuesWithVATCreditRevenues(requestModel, cancellationToken);
                     if (actualRevenuesForThisInterval.StatusCode == (int)HttpStatusCode.BadRequest)
                     {
-                        return BadRequest("Something went wrong! See logs for more detail informations!");
+                        return BadRequest("Something went wrong! See logs for more detailed informations!");
                     }
                     if (actualRevenuesForThisInterval.Data != null && actualRevenuesForThisInterval.Data.Count != 0)
                     {
@@ -170,7 +171,7 @@ namespace SAP.DocumentGenerator.Controllers
                     var allRevenuesCollectedForThisInterval = await _documentGeneratorHelper.PrepareAllRevenuesWithinTimePeriod(requestModel, cancellationToken);
                     if (allRevenuesCollectedForThisInterval.StatusCode == (int)HttpStatusCode.BadRequest)
                     {
-                        return BadRequest("Something went wrong! See logs for more detail informations!");
+                        return BadRequest("Something went wrong! See logs for more detailed informations!");
                     }
 
                     if (allRevenuesCollectedForThisInterval.Data != null && allRevenuesCollectedForThisInterval.Data.Count != 0)
@@ -182,7 +183,7 @@ namespace SAP.DocumentGenerator.Controllers
                     var actualRevenuesForThisInterval = await _documentGeneratorHelper.PrepareRegularRevenuesWithVATCreditRevenues(requestModel, cancellationToken);
                     if (actualRevenuesForThisInterval.StatusCode == (int)HttpStatusCode.BadRequest)
                     {
-                        return BadRequest("Something went wrong! See logs for more detail informations!");
+                        return BadRequest("Something went wrong! See logs for more detailed informations!");
                     }
                     if (actualRevenuesForThisInterval.Data != null && actualRevenuesForThisInterval.Data.Count != 0)
                     {
@@ -198,7 +199,7 @@ namespace SAP.DocumentGenerator.Controllers
 
                 if (relDeferredRevenueActualRevenueList.Count == 0)
                 {
-                    return Ok("No data for this interval");
+                    return Ok("No data for this interval.");
                 }
 
                 var uploadSuccessfully = await _documentGeneratorService.UploadCsvToFtp(finalCsvFile, requestModel, cancellationToken);
@@ -211,6 +212,10 @@ namespace SAP.DocumentGenerator.Controllers
                 foreach (var model in relDeferredRevenueActualRevenueList)
                 {
                     var itemAdded = await _sapInterfaceTransactionService.Add(model, requestModel, cancellationToken);
+                    if(!string.IsNullOrEmpty(itemAdded.Message))
+                    {
+                        return BadRequest(itemAdded.Message);
+                    }
                 }
 
                 return Ok("File successfully generated and uploaded on the ftp server!");
@@ -219,8 +224,8 @@ namespace SAP.DocumentGenerator.Controllers
             {
                 await _logService.AddLogAsync(
                     logLevel: LogLevelConstants.SapApiError,
-                    shortMessage: $"Something went wrong on method: {MethodBase.GetCurrentMethod()}",
-                    fullMessage: $"Full error information for error on method: {MethodBase.GetCurrentMethod()} /n" +
+                    shortMessage: $"Something went wrong on method: {MethodNameHelper.GetMethodName()}",
+                    fullMessage: $"Full error information for error on method: {MethodNameHelper.GetMethodName()} /n" +
                     $"Exception Message: {ex.Message} /n " +
                     $"Inner Exception: {ex.InnerException?.Message}",
                     cancellationToken);

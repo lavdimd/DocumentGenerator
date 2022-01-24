@@ -16,6 +16,7 @@ using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace SAP.Services.Services
 {
@@ -54,7 +55,7 @@ namespace SAP.Services.Services
 
         public async Task<Response<string>> ReportAllRevenue(List<SapInterfaceModel> sapInterfaceList, CancellationToken cancellationToken)
         {
-            var prepareCSVForActualRevenues = await _documentGeneratorHelper.PrepareCSVFile(sapInterfaceList);
+            var prepareCSVForActualRevenues = _documentGeneratorHelper.PrepareCSVFile(sapInterfaceList);
 
             return new Response<string>(prepareCSVForActualRevenues.Data);
         }
@@ -68,7 +69,7 @@ namespace SAP.Services.Services
                 return new Response<string>(null);
             }
 
-            var prepareCSVForActualRevenues = await _documentGeneratorHelper.PrepareCSVFile(preparedData.Data);
+            var prepareCSVForActualRevenues = _documentGeneratorHelper.PrepareCSVFile(preparedData.Data);
 
             return new Response<string>(prepareCSVForActualRevenues.Data);
         }
@@ -82,7 +83,7 @@ namespace SAP.Services.Services
                 return new Response<string>(null);
             }
 
-            var prepareCSVForActualRevenues = await _documentGeneratorHelper.PrepareCSVFile(preparedData.Data);
+            var prepareCSVForActualRevenues = _documentGeneratorHelper.PrepareCSVFile(preparedData.Data);
 
             return new Response<string>(prepareCSVForActualRevenues.Data);
         }
@@ -166,18 +167,21 @@ namespace SAP.Services.Services
 
         private FtpServerConfig GetFtpServerConfigurations()
         {
-            var app = _appSettings.FtpServerConfig;
-            FtpServerConfig ftpServerConfig = new FtpServerConfig
-            {
-                Directory = "sapftp/CZ01/FLEA_MARKET/TEST",
-                Host = "am.gjirafamall.com",
-                Username = "am.gjirafamall.com|am",
-                Password = "6UWcEufu",
-                Port = 21
-            };
-
+            //var app = _appSettings.FtpServerConfig;
             //FtpServerConfig ftpServerConfig = new FtpServerConfig
             //{
+            //    Directory = "sapftp/CZ01/FLEA_MARKET/TEST",
+            //    Host = "am.gjirafamall.com",
+            //    Username = "am.gjirafamall.com|am",
+            //    Password = "6UWcEufu",
+            //    Port = 21
+            //};
+
+            FtpServerConfig ftpServerConfig = new FtpServerConfig();
+           ftpServerConfig =  _configuration.GetSection("FtpServerConfig").Get<FtpServerConfig>();
+
+            //FtpServerConfig ftpServerConfig = new FtpServerConfig
+            //{1
             //    Directory = "sapftp/CZ01/FLEA_MARKET/TEST",
             //    Host = "﻿ftp.cncenter.cz",
             //    Username = "fleamarket",
