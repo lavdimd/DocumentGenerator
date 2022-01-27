@@ -60,37 +60,42 @@ namespace SAP.DocumentGenerator
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SAP.DocumentGenerator v1"));
             }
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SAP.DocumentGenerator v1"));
 
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthorization();
 
             app.UseMiddleware<ApiKeyAuthorizationMiddleware>();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
 
 
+            #region Jobs
 
-#if !DEBUG
-            app.UseHangfireDashboard(string.Empty, new DashboardOptions
-            {
-                Authorization = new[] { new AuthFilter() },
-                IgnoreAntiforgeryToken = true,
-                AppPath = ""
-            });
-#else
-            app.UseHangfireDashboard("/hangfire", new DashboardOptions
-            {
-                Authorization = new[] { new AuthFilter() },
-                IgnoreAntiforgeryToken = true
-            });
-#endif
-            recurringJobManager.AddOrUpdate<IDocumentGeneratorJob>("Upload reports from transaction history", x => x.GenerateCSV(default), Cron.Daily);
+            //#if !DEBUG
+            //            app.UseHangfireDashboard(string.Empty, new DashboardOptions
+            //            {
+            //                Authorization = new[] { new AuthFilter() },
+            //                IgnoreAntiforgeryToken = true,
+            //                AppPath = ""
+            //            });
+            //#else
+            //            app.UseHangfireDashboard("/hangfire", new DashboardOptions
+            //            {
+            //                Authorization = new[] { new AuthFilter() },
+            //                IgnoreAntiforgeryToken = true
+            //            });
+            //#endif
+            //            recurringJobManager.AddOrUpdate<IDocumentGeneratorJob>("Upload reports from transaction history", x => x.GenerateCSV(default), Cron.Daily);
+
+            #endregion
         }
     }
 }

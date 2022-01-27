@@ -20,7 +20,7 @@ namespace SAP.Configuration.Filters
                 Name = "X-Api-Key",
                 In = ParameterLocation.Header,
                 Schema = new OpenApiSchema() { Type = "String" },
-                Required = false,
+                Required = true
             });
         }
     }
